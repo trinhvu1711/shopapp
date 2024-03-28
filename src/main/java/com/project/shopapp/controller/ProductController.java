@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class ProductController {
 //            @RequestPart("file") MultipartFile file,
             BindingResult result) {
         try {
-            if (result.hasErrors()){
+            if (result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
                         .stream()
                         .map(FieldError::getDefaultMessage)
@@ -38,23 +39,26 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
 //        check image file is valid
-            MultipartFile file = productDTO.getFile();
-            if (file != null){
-                if(file.getSize() > 10 * 1024 * 1024){
+            List<MultipartFile> files = productDTO.getFiles();
+            files = files == null ? new ArrayList<MultipartFile>() : files;
+            for (MultipartFile file : files) {
+                 if (file.getSize() == 0) {
+                     continue;
+                 }
+                if (file.getSize() > 10 * 1024 * 1024) {
                     return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File is too large! Maximum size is 1000");
                 }
                 String contentType = file.getContentType();
-                if (contentType == null || !contentType.startsWith("image/")){
+                if (contentType == null || !contentType.startsWith("image/")) {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("File must be an image");
                 }
+//                    save file in dto
                 String filename = storeFile(file);
+//                    save product to db
             }
-
-            return ResponseEntity.ok("This is insertProduct "+productDTO);
-        }
-        catch (Exception e){
+            return ResponseEntity.ok("Product created successfully " + productDTO);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-
         }
     }
 //
@@ -79,6 +83,7 @@ public class ProductController {
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
     }
+
     @GetMapping("")//http://localhost:8088/api/v1/products?page=10&limit=10
     public ResponseEntity<String> getProducts(
             @RequestParam("page") int page,
@@ -89,7 +94,7 @@ public class ProductController {
     @GetMapping("/{id}")//http://localhost:8088/api/v1/products/6
     public ResponseEntity<String> getProductById(
             @PathVariable("id") String productId) {
-        return ResponseEntity.ok(String.format("get product with id = %s", productId ));
+        return ResponseEntity.ok(String.format("get product with id = %s", productId));
     }
 
     @DeleteMapping("/{id}")
