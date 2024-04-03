@@ -28,9 +28,9 @@ public class User extends BaseEntity{
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
     @Column(name = "facebook_account_id")
-    private Date facebookAccountId;
+    private int facebookAccountId;
     @Column(name = "google_account_id")
-    private Date googleAccountId;
+    private int googleAccountId;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
