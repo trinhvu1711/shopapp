@@ -6,8 +6,12 @@ import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepository;
 import com.project.shopapp.repositories.UserRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 
+@Service
+@NoArgsConstructor
 public class UserService implements IUserService{
     private UserRepository userRepository;
     private RoleRepository roleRepository;
