@@ -11,12 +11,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ProductImage {
+    public static final int MAXIMUM_IMAGES_PER_PRODUCTS = 5;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Category productId;
+    private Product product;
     @Column(name = "image_url", length = 300)
     private String imageUrl;
 }
