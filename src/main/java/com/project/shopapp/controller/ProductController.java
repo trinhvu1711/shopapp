@@ -1,5 +1,6 @@
 package com.project.shopapp.controller;
 
+import com.github.javafaker.Faker;
 import com.project.shopapp.dtos.ProductDTO;
 import com.project.shopapp.dtos.ProductImageDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
@@ -75,8 +76,8 @@ public class ProductController {
         Product existingProduct = productService.getProductById(productId);
 //        check image file is valid
         files = files == null ? new ArrayList<MultipartFile>() : files;
-        if (files.size() > ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS){
-            return ResponseEntity.badRequest().body("You can only upload maximum "+ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS+" images");
+        if (files.size() > ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS) {
+            return ResponseEntity.badRequest().body("You can only upload maximum " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS + " images");
         }
         List<ProductImage> productImages = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -105,7 +106,7 @@ public class ProductController {
     }
 
     private String storeFile(MultipartFile file) throws IOException {
-        if (!isImageFile(file) || file.getOriginalFilename() == null){
+        if (!isImageFile(file) || file.getOriginalFilename() == null) {
             throw new IOException("Invalid image format");
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -120,7 +121,7 @@ public class ProductController {
         return uniqueFilename;
     }
 
-    private boolean isImageFile(MultipartFile file){
+    private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
@@ -135,21 +136,57 @@ public class ProductController {
         Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
         int totalPage = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
-        return ResponseEntity.ok(ProductListResponse
-                                         .builder()
-                                         .products(products)
-                                         .totalPage(totalPage)
-                                         .build());
+        return ResponseEntity.ok(
+                ProductListResponse
+                        .builder()
+                        .products(products)
+                        .totalPage(totalPage)
+                        .build());
     }
 
     @GetMapping("/{id}")//http://localhost:8088/api/v1/products/6
-    public ResponseEntity<String> getProductById(
-            @PathVariable("id") String productId) {
-        return ResponseEntity.ok(String.format("get product with id = %s", productId));
+    public ResponseEntity<?> getProductById(
+            @PathVariable("id") Long productId) {
+        try {
+            Product existingProduct = productService.getProductById(productId);
+            return ResponseEntity.ok(ProductResponse.fromProduct(existingProduct));
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-        return ResponseEntity.ok("This is deleteProduct " + id);
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.ok("Delete product successfully " + id);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/generateFakerProduct")//http://localhost:8088/api/v1/products/generateFakerProduct
+    public ResponseEntity<String> generateFakeProducts() {
+        Faker faker = new Faker();
+        for (int i = 0; i < 500; i++) {
+            String productName = faker.commerce().productName();
+            if (productService.existByName(productName)) {
+                continue;
+            }
+            ProductDTO productDTO = ProductDTO
+                    .builder()
+                    .name(productName)
+                    .price((float) faker.number().numberBetween(10, 90_000_000))
+                    .description(faker.lorem().sentence())
+                    .categoryId((int) faker.number().numberBetween(1, 3))
+                    .thumbnail("")
+                    .build();
+            try {
+                productService.createProduct(productDTO);
+            } catch (DataNotFoundException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+        return ResponseEntity.ok("Fake Products created successfully");
     }
 }
