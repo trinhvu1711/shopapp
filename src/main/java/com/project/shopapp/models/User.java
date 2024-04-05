@@ -1,12 +1,13 @@
 package com.project.shopapp.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class User extends BaseEntity{
     private String address;
     @Column(name = "password", length = 200, nullable = false)
     private String password;
+    @Column(name = "is_active")
     private boolean active;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
