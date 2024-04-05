@@ -1,7 +1,11 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.OrderDetailDTO;
+import com.project.shopapp.models.OrderDetail;
+import com.project.shopapp.responses.OrderDetailResponse;
+import com.project.shopapp.service.OrderDetailService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -11,7 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("${api.prefix}/order_details")
+@RequiredArgsConstructor
 public class OrderDetailController {
+    private final OrderDetailService orderDetailService;
     @PostMapping("")
     public ResponseEntity<?> createOrderDetail(@RequestBody @Valid OrderDetailDTO orderDetailDTO,
                                          BindingResult result) {
@@ -23,7 +29,9 @@ public class OrderDetailController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            return ResponseEntity.ok("create order detail successfully");
+            OrderDetail newOrderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
+            OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrderDetail(newOrderDetail);
+            return ResponseEntity.ok(orderDetailResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -33,7 +41,8 @@ public class OrderDetailController {
     public ResponseEntity<?> getOrderDetail(
             @Valid @PathVariable("id") Long id) {
         try {
-            return ResponseEntity.ok(String.format("get order detail with id = %s", id));
+            OrderDetail orderDetail = orderDetailService.getOrderDetail(id);
+            return ResponseEntity.ok(OrderDetailResponse.fromOrderDetail(orderDetail));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -43,7 +52,9 @@ public class OrderDetailController {
     public ResponseEntity<?> getOrderDetails(
             @Valid @PathVariable("orderId") Long orderId) {
         try {
-            return ResponseEntity.ok(String.format("get order detail with order id = %s", orderId));
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId);
+            List<OrderDetailResponse> orderDetailResponses = orderDetails.stream().map(OrderDetailResponse::fromOrderDetail).toList();
+            return ResponseEntity.ok(orderDetailResponses);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -54,7 +65,8 @@ public class OrderDetailController {
             @Valid @PathVariable("id") Long id,
             @Valid @RequestBody OrderDetailDTO orderDetailDTO) {
         try {
-            return ResponseEntity.ok(String.format("update order detail with id = %s", id));
+            OrderDetail orderDetail = orderDetailService.updateOrderDetail(id,orderDetailDTO);
+            return ResponseEntity.ok(orderDetail);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -65,7 +77,8 @@ public class OrderDetailController {
     public ResponseEntity<?> deleteOrderDetail(
             @Valid @PathVariable("id") Long id) {
         try {
-            return ResponseEntity.ok(String.format("delete order detail with id = %s", id));
+            orderDetailService.deleteOrderDetail(id);
+            return ResponseEntity.ok(String.format("Delete order detail with id = %s successfully", id));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
