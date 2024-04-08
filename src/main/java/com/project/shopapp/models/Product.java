@@ -17,11 +17,12 @@ public class Product extends BaseEntity {
     private Long id;
     @Column(name = "name", nullable = false, length = 350)
     private String name;
-    private float price;
+
     @Column(name = "thumbnail", length = 300)
     private String thumbnail;
     private String description;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
 }

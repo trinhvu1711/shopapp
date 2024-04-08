@@ -176,7 +176,7 @@ public class ProductController {
             ProductDTO productDTO = ProductDTO
                     .builder()
                     .name(productName)
-                    .price((float) faker.number().numberBetween(10, 90_000_000))
+//                    .price((float) faker.number().numberBetween(10, 90_000_000))
                     .description(faker.lorem().sentence())
                     .categoryId((int) faker.number().numberBetween(1, 3))
                     .thumbnail("")
