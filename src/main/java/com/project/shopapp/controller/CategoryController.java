@@ -5,6 +5,8 @@ import com.project.shopapp.models.Category;
 import com.project.shopapp.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -40,7 +42,10 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getAllCategory(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit) {
-        List<Category> categories = categoryService.getAllCategories();
+        PageRequest pageRequest = PageRequest.of(
+                page, limit, Sort.by("id").ascending()
+        );
+        List<Category> categories = categoryService.getAllCategories(pageRequest);
         return ResponseEntity.ok(categories);
     }
 

@@ -7,11 +7,9 @@ import com.project.shopapp.exceptions.InvalidParamException;
 import com.project.shopapp.models.Category;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
-import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.CategoryRepository;
 import com.project.shopapp.repositories.ProductImageRepository;
 import com.project.shopapp.repositories.ProductRepository;
-import com.project.shopapp.repositories.VariantRepository;
 import com.project.shopapp.responses.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,15 +28,12 @@ public class ProductService implements IProductService {
     public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
         Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find category with id " + productDTO.getCategoryId()));
-//        Variant existingVariant = variantRepository.findById(productDTO.getVariantId())
-//                .orElseThrow(() -> new DataNotFoundException("Cannot find variant with id " + productDTO.getVariantId()));
         Product newProduct = Product.builder()
                 .name(productDTO.getName())
-//                .price(productDTO.getPrice())
                 .thumbnail(productDTO.getThumbnail())
                 .category(existingCategory)
-//                .variant(existingVariant)
                 .description(productDTO.getDescription())
+                .descriptionHtml(productDTO.getDescriptionHtml())
                 .build();
         return productRepository.save(newProduct);
     }
@@ -61,13 +56,10 @@ public class ProductService implements IProductService {
             existingProduct.setName(productDTO.getName());
             Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                     .orElseThrow(() -> new DataNotFoundException("Cannot find category with id " + productDTO.getCategoryId()));
-//            Variant existingVariant = variantRepository.findById(productDTO.getVariantId())
-//                    .orElseThrow(() -> new DataNotFoundException("Cannot find variant with id " + productDTO.getVariantId()));
             existingProduct.setCategory(existingCategory);
-//            existingProduct.setVariant(existingVariant);
-//            existingProduct.setPrice(productDTO.getPrice());
             existingProduct.setDescription(productDTO.getDescription());
             existingProduct.setThumbnail(productDTO.getThumbnail());
+            existingProduct.setDescriptionHtml(productDTO.getDescriptionHtml());
             return productRepository.save(existingProduct);
         }
         return null;

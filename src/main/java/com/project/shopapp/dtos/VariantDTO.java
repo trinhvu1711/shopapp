@@ -24,4 +24,6 @@ public class VariantDTO {
     @JsonProperty("product_id")
     @Min(value = 1, message = "Product's id must be > 0")
     private long productId;
+    @NotEmpty(message = "currency cannot be empty")
+    private String currency;
 }

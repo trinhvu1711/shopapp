@@ -32,6 +32,7 @@ public class VariantService implements IVariantService {
                 .availableForSale(variantDTO.isAvailableForSale())
                 .option(option)
                 .product(existingProduct)
+                .currency(variantDTO.getCurrency())
                 .build();
         return variantRepository.save(variant);
     }
@@ -39,6 +40,15 @@ public class VariantService implements IVariantService {
     @Override
     public Variant getVariantById(long id) {
         return variantRepository.findById(id).orElseThrow(() -> new RuntimeException("Variant not found"));
+    }
+
+//    @Override
+    public List<Variant> getVariantByProductId(long productId) throws DataNotFoundException {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productId));
+
+        return variantRepository.getVariantsByProduct(existingProduct);
+
     }
 
     @Override
@@ -59,6 +69,7 @@ public class VariantService implements IVariantService {
             existingVariant.setAvailableForSale(variantDTO.isAvailableForSale());
             existingVariant.setProduct(existingProduct);
             existingVariant.setOption(option);
+            existingVariant.setCurrency(variantDTO.getCurrency());
             return variantRepository.save(existingVariant);
         }
         return null;

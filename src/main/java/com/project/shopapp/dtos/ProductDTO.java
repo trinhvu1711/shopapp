@@ -21,7 +21,7 @@ public class ProductDTO {
     private String description;
     @JsonProperty("category_id")
     private long categoryId;
-//    @JsonProperty("variant_id")
-//    private long variantId;
+    @JsonProperty("description_html")
+    private String descriptionHtml;
     private List<MultipartFile> files;
 }

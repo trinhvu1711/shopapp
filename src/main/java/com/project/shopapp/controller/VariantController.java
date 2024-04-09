@@ -1,6 +1,5 @@
 package com.project.shopapp.controller;
 
-import com.project.shopapp.dtos.CategoryDTO;
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.models.Variant;
 import com.project.shopapp.service.VariantService;

@@ -17,5 +17,6 @@ public class Category {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 }

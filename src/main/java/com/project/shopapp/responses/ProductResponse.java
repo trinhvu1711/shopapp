@@ -15,16 +15,14 @@ public class ProductResponse extends BaseResponse{
     private String description;
     @JsonProperty("category_id")
     private long categoryId;
-    @JsonProperty("variant_id")
-    private long variantId;
+    private String descriptionHtml;
     public static ProductResponse fromProduct(Product product){
         ProductResponse productResponse = ProductResponse.builder()
                 .name(product.getName())
                 .description(product.getDescription())
-//                .price(product.getPrice())
                 .thumbnail(product.getThumbnail())
                 .categoryId(product.getCategory().getId())
-//                .variantId(product.getVariant().getId())
+                .descriptionHtml(product.getDescriptionHtml())
                 .build();
         productResponse.setCreateAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());
