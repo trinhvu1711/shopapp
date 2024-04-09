@@ -3,12 +3,11 @@ package com.project.shopapp.service;
 import com.project.shopapp.components.JwtTokenUtil;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
+import com.project.shopapp.exceptions.InvalidParamException;
 import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepository;
 import com.project.shopapp.repositories.UserRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,7 +52,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String phoneNumber, String password) throws DataNotFoundException {
+    public String login(String phoneNumber, String password) throws DataNotFoundException, InvalidParamException {
         Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);
         if (optionalUser.isEmpty()){
             throw new DataNotFoundException("Invalid phone number / password");
@@ -65,7 +64,7 @@ public class UserService implements IUserService{
             }
         }
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(phoneNumber, password);
+                new UsernamePasswordAuthenticationToken(phoneNumber, password, existingUser.getAuthorities());
         authenticationManager.authenticate(authenticationToken);
         return jwtTokenUtil.generateToken(existingUser);
     }
