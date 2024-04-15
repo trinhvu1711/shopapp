@@ -1,6 +1,8 @@
 package com.project.shopapp.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Entity
@@ -19,4 +21,8 @@ public class Option {
     private String name;
     @Column(name = "value", nullable = false)
     private String value;
+    @ManyToOne
+    @JoinColumn(name = "variant_id")
+    private Variant variant;
+
 }

@@ -22,15 +22,15 @@ public class VariantService implements IVariantService {
     private final ProductRepository productRepository;
     @Override
     public Variant createVariant(VariantDTO variantDTO) throws Exception {
-        Option option = optionRepository.findById(variantDTO.getOptionId())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find option with id " + variantDTO.getOptionId()));
+//        Option option = optionRepository.findById(variantDTO.getOptionId())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find option with id " + variantDTO.getOptionId()));
         Product existingProduct = productRepository.findById(variantDTO.getProductId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + variantDTO.getProductId()));
         Variant variant = Variant.builder()
                 .name(variantDTO.getName())
                 .price(variantDTO.getPrice())
                 .availableForSale(variantDTO.isAvailableForSale())
-                .option(option)
+//                .option(option)
                 .product(existingProduct)
                 .currency(variantDTO.getCurrency())
                 .build();
@@ -60,15 +60,15 @@ public class VariantService implements IVariantService {
     public Variant updateVariant(long variantId, VariantDTO variantDTO) throws Exception {
         Variant existingVariant = getVariantById(variantId);
         if (existingVariant != null) {
-            Option option = optionRepository.findById(variantDTO.getOptionId())
-                    .orElseThrow(() -> new DataNotFoundException("Cannot find option with id " + variantDTO.getOptionId()));
+//            Option option = optionRepository.findById(variantDTO.getOptionId())
+//                    .orElseThrow(() -> new DataNotFoundException("Cannot find option with id " + variantDTO.getOptionId()));
             Product existingProduct = productRepository.findById(variantDTO.getProductId())
                     .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + variantDTO.getProductId()));
             existingVariant.setName(variantDTO.getName());
             existingVariant.setPrice(variantDTO.getPrice());
             existingVariant.setAvailableForSale(variantDTO.isAvailableForSale());
             existingVariant.setProduct(existingProduct);
-            existingVariant.setOption(option);
+//            existingVariant.setOption(option);
             existingVariant.setCurrency(variantDTO.getCurrency());
             return variantRepository.save(existingVariant);
         }

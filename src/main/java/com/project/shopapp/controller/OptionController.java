@@ -1,6 +1,7 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.OptionDTO;
+import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Option;
 import com.project.shopapp.service.OptionService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class OptionController {
 //      Data transfer Object
     public ResponseEntity<?> createOption(
             @Valid @RequestBody OptionDTO optionDTO,
-            BindingResult result) {
+            BindingResult result) throws DataNotFoundException {
         if (result.hasErrors()){
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -47,7 +48,7 @@ public class OptionController {
     public ResponseEntity<String> updateOption(
             @PathVariable Long id,
             @Valid @RequestBody OptionDTO optionDTO
-    ) {
+    ) throws DataNotFoundException {
         optionService.updateOption(id, optionDTO);
         return ResponseEntity.ok("Update option successfully" );
     }

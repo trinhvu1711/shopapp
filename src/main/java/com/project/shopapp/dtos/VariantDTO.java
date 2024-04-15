@@ -12,8 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VariantDTO {
-    @JsonProperty("option_id")
-    private long optionId;
+//    @JsonProperty("option_id")
+//    private long optionId;
     @NotEmpty(message = "variant's name cannot be empty")
     private String name;
     @JsonProperty("available_for_sale")
@@ -26,4 +26,5 @@ public class VariantDTO {
     private long productId;
     @NotEmpty(message = "currency cannot be empty")
     private String currency;
+
 }

@@ -15,9 +15,7 @@ public class Variant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "option_id", nullable = false)
-    private Option option;
+
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "available_for_sale", nullable = false)
