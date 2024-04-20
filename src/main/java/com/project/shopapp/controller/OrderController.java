@@ -1,11 +1,8 @@
 package com.project.shopapp.controller;
 
-import com.project.shopapp.components.LocalizationUtils;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
-import com.project.shopapp.responses.DeleteOrderResponse;
 import com.project.shopapp.service.OrderService;
-import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final LocalizationUtils localizationUtils;
     @PostMapping("")
     public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO,
                                          BindingResult result) {
@@ -75,17 +71,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")//http://localhost:8088/api/v1/orders/6
-    public ResponseEntity<DeleteOrderResponse> deleteOrders(
+    public ResponseEntity<?> deleteOrders(
             @Valid @PathVariable("id") Long id) {
         try {
             orderService.deleteOrder(id);
-            return ResponseEntity.ok(DeleteOrderResponse.builder()
-                                             .message(localizationUtils.getlocalizeMessage(MessageKeys.DELETE_ORDER_SUCCESSFULLY, id))
-                                             .build());
+            return ResponseEntity.ok(String.format("delete order with order id = %s", id));
         } catch (Exception e){
-            return ResponseEntity.badRequest().body(DeleteOrderResponse.builder()
-                                                            .message(localizationUtils.getlocalizeMessage(MessageKeys.DELETE_ORDER_FAILED, id))
-                                                            .build());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }

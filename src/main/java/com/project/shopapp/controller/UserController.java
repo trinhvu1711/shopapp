@@ -2,12 +2,12 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
-import com.project.shopapp.responses.LoginResponse;
+import com.project.shopapp.exceptions.DataNotFoundException;
+import com.project.shopapp.service.IUserService;
 import com.project.shopapp.service.UserService;
-import com.project.shopapp.components.LocalizationUtils;
-import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final LocalizationUtils localizationUtils;
+
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDTO userDTO,
@@ -43,19 +43,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<String> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO
     ) {
         try {
             String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
-            return ResponseEntity.ok(LoginResponse.builder()
-                                             .message(localizationUtils.getlocalizeMessage(MessageKeys.LOGIN_SUCCESSFULLY))
-                                             .token(token)
-                                             .build());
+            return ResponseEntity.ok(token);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(LoginResponse.builder()
-                                                            .message(localizationUtils.getlocalizeMessage(MessageKeys.LOGIN_FAILED, e.getMessage()))
-                                                            .build());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

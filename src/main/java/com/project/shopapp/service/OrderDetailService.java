@@ -62,11 +62,7 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Override
     public void deleteOrderDetail(Long id) {
-        OrderDetail order = orderDetailRepository.findById(id).orElseThrow(null);
-        if (order != null){
-            orderDetailRepository.deleteById(id);
-        }
-
+        orderDetailRepository.deleteById(id);
     }
 
     @Override

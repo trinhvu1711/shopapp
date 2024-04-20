@@ -1,7 +1,6 @@
 package com.project.shopapp.controller;
 
 import com.github.javafaker.Faker;
-import com.project.shopapp.components.LocalizationUtils;
 import com.project.shopapp.dtos.ProductDTO;
 import com.project.shopapp.dtos.ProductImageDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
@@ -10,7 +9,6 @@ import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.responses.ProductListResponse;
 import com.project.shopapp.responses.ProductResponse;
 import com.project.shopapp.service.ProductService;
-import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.UrlResource;
@@ -41,7 +39,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private final LocalizationUtils localizationUtils;
+
     @PostMapping(value = "")
 //      Data transfer Object
     public ResponseEntity<?> createProduct(
@@ -79,7 +77,7 @@ public class ProductController {
 //        check image file is valid
         files = files == null ? new ArrayList<MultipartFile>() : files;
         if (files.size() > ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS) {
-            return ResponseEntity.badRequest().body(localizationUtils.getlocalizeMessage(MessageKeys.UPLOAD_IMAGE_MAX_5));
+            return ResponseEntity.badRequest().body("You can only upload maximum " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS + " images");
         }
         List<ProductImage> productImages = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -87,11 +85,11 @@ public class ProductController {
                 continue;
             }
             if (file.getSize() > 10 * 1024 * 1024) {
-                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(localizationUtils.getlocalizeMessage(MessageKeys.UPLOAD_IMAGE_FILE_LARGE));
+                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File is too large! Maximum size is 1000");
             }
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(localizationUtils.getlocalizeMessage(MessageKeys.UPLOAD_IMAGE_FILE_LARGE));
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("File must be an image");
             }
 //                    save file in dto
             String filename = storeFile(file);
