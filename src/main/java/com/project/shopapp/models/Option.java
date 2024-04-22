@@ -21,8 +21,8 @@ public class Option {
     private String name;
     @Column(name = "value", nullable = false)
     private String value;
-    @ManyToOne
-    @JoinColumn(name = "variant_id")
-    private Variant variant;
+//    @ManyToOne
+//    @JoinColumn(name = "variant_id")
+//    private Variant variant;
 
 }

@@ -25,7 +25,7 @@ public class OptionService implements IOptionService {
         Option option = Option.builder()
                 .name(optionDTO.getName())
                 .value(optionDTO.getValue())
-                .variant(variant)
+//                .variant(variant)
                 .build();
         return optionRepository.save(option);
     }
@@ -48,7 +48,7 @@ public class OptionService implements IOptionService {
                     .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + optionDTO.getVariantId()));
             existingOption.setName(optionDTO.getName());
             existingOption.setValue(optionDTO.getValue());
-            existingOption.setVariant(variant);
+//            existingOption.setVariant(variant);
             return optionRepository.save(existingOption);
         }
        return null;

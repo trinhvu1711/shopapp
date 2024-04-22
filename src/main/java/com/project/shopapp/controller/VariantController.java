@@ -1,6 +1,7 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.VariantDTO;
+import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Variant;
 import com.project.shopapp.service.VariantService;
 import jakarta.validation.Valid;
@@ -43,6 +44,11 @@ public class VariantController {
     @GetMapping("")//http://localhost:8088/api/v1/variants?page=10&limit=10
     public ResponseEntity<List<Variant>> getAllVariant() {
         List<Variant> variants = variantService.getAllVariants();
+        return ResponseEntity.ok(variants);
+    }
+    @GetMapping("/{id}")//http://localhost:8088/api/v1/variants?page=10&limit=10
+    public ResponseEntity<Variant> getVariant(@PathVariable Long id) throws DataNotFoundException {
+        Variant variants = variantService.getVariantById(id);
         return ResponseEntity.ok(variants);
     }
 

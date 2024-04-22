@@ -3,6 +3,8 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="products")
 @Getter
@@ -26,5 +28,8 @@ public class Product extends BaseEntity {
     private Category category;
     @Column(name="description_html")
     private String descriptionHtml;
-
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<ProductImage> productImages;
 }

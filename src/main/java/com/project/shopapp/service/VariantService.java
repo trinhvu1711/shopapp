@@ -24,37 +24,42 @@ public class VariantService implements IVariantService {
     public Variant createVariant(VariantDTO variantDTO) throws Exception {
 //        Option option = optionRepository.findById(variantDTO.getOptionId())
 //                .orElseThrow(() -> new DataNotFoundException("Cannot find option with id " + variantDTO.getOptionId()));
-        Product existingProduct = productRepository.findById(variantDTO.getProductId())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + variantDTO.getProductId()));
+//        Product existingProduct = productRepository.findById(variantDTO.getProductId())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + variantDTO.getProductId()));
         Variant variant = Variant.builder()
                 .name(variantDTO.getName())
                 .price(variantDTO.getPrice())
                 .availableForSale(variantDTO.isAvailableForSale())
 //                .option(option)
-                .product(existingProduct)
+//                .product(existingProduct)
                 .currency(variantDTO.getCurrency())
                 .build();
         return variantRepository.save(variant);
     }
 
     @Override
-    public Variant getVariantById(long id) {
-        return variantRepository.findById(id).orElseThrow(() -> new RuntimeException("Variant not found"));
+    public Variant getVariantById(long id) throws DataNotFoundException {
+        Optional<Variant> optionalVariant= variantRepository.getVariant(id);
+        if(optionalVariant.isPresent()) {
+            return optionalVariant.get();
+        }
+        throw new DataNotFoundException("Cannot find variant with id =" + id);
     }
 
 //    @Override
-    public List<Variant> getVariantByProductId(long productId) throws DataNotFoundException {
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productId));
-
-        return variantRepository.getVariantsByProduct(existingProduct);
-
-    }
+//    public List<Variant> getVariantByProductId(long productId) throws DataNotFoundException {
+//        Product existingProduct = productRepository.findById(productId)
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productId));
+//
+//        return variantRepository.getVariantsByProduct(existingProduct);
+//
+//    }
 
     @Override
     public List<Variant> getAllVariants() {
         return variantRepository.findAll();
     }
+
 
     @Override
     public Variant updateVariant(long variantId, VariantDTO variantDTO) throws Exception {
@@ -67,7 +72,7 @@ public class VariantService implements IVariantService {
             existingVariant.setName(variantDTO.getName());
             existingVariant.setPrice(variantDTO.getPrice());
             existingVariant.setAvailableForSale(variantDTO.isAvailableForSale());
-            existingVariant.setProduct(existingProduct);
+//            existingVariant.setProduct(existingProduct);
 //            existingVariant.setOption(option);
             existingVariant.setCurrency(variantDTO.getCurrency());
             return variantRepository.save(existingVariant);

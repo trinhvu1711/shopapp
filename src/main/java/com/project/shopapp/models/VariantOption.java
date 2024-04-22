@@ -4,22 +4,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
-@Table(name="product_images")
+@Table(name="variant_options")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductImage {
-    public static final int MAXIMUM_IMAGES_PER_PRODUCTS = 5;
+public class VariantOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "variant_id")
     @JsonIgnore
-    private Product product;
-    @Column(name = "image_url", length = 300)
-    private String imageUrl;
+    private Variant variant;
+    @JoinColumn(name = "option_id")
+    @OneToMany
+    private List<Option> option;
+
 }

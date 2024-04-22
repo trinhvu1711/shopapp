@@ -3,6 +3,8 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="variants")
 @Data
@@ -21,9 +23,12 @@ public class Variant {
     @Column(name = "available_for_sale", nullable = false)
     private boolean availableForSale;
     private float price;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
     private String currency;
-
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "variant_options",
+            joinColumns = { @JoinColumn(name = "variant_id") },
+            inverseJoinColumns = { @JoinColumn(name = "option_id") }
+    )
+    private List<Option> options;
 }

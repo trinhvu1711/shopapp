@@ -39,9 +39,12 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getProductById(Long id) throws DataNotFoundException {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id =" + id));
+    public Product getProductById(Long productId) throws DataNotFoundException {
+        Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
+        if(optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        }
+        throw new DataNotFoundException("Cannot find product with id =" + productId);
     }
 
     @Override
