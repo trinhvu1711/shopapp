@@ -24,6 +24,7 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
+
     @Override
     public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
         Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
@@ -40,12 +41,26 @@ public class ProductService implements IProductService {
 
     @Override
     public Product getProductById(Long productId) throws DataNotFoundException {
-        Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
-        if(optionalProduct.isPresent()) {
-            return optionalProduct.get();
+        Optional<Product> optionalProductWithImages = productRepository.getProductWithImages(productId);
+        Optional<Product> optionalProductWithVariants = productRepository.getProductWithVariants(productId);
+
+        if (optionalProductWithImages.isPresent() && optionalProductWithVariants.isPresent()) {
+            Product product = optionalProductWithImages.get();
+            product.setVariants(optionalProductWithVariants.get().getVariants()); // Set variants
+            return product;
         }
+
         throw new DataNotFoundException("Cannot find product with id =" + productId);
     }
+
+//    @Override
+//    public Product getProductById(Long productId) throws DataNotFoundException {
+//        Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
+//        if(optionalProduct.isPresent()) {
+//            return optionalProduct.get();
+//        }
+//        throw new DataNotFoundException("Cannot find product with id =" + productId);
+//    }
 
     @Override
     public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
