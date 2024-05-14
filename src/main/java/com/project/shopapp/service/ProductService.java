@@ -43,7 +43,6 @@ public class ProductService implements IProductService {
     public Product getProductById(Long productId) throws DataNotFoundException {
         Optional<Product> optionalProductWithImages = productRepository.getProductWithImages(productId);
         Optional<Product> optionalProductWithVariants = productRepository.getProductWithVariants(productId);
-
         if (optionalProductWithImages.isPresent() && optionalProductWithVariants.isPresent()) {
             Product product = optionalProductWithImages.get();
             product.setVariants(optionalProductWithVariants.get().getVariants()); // Set variants

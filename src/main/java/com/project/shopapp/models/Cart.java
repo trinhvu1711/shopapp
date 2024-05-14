@@ -4,19 +4,19 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="order_details")
+@Table(name="cart")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDetail {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JoinColumn(name = "list_cart_id")
+    private ListCart listCart;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

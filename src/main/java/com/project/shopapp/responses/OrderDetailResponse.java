@@ -31,7 +31,7 @@ public class OrderDetailResponse {
                 .price(orderDetail.getPrice())
                 .numberOfProducts(orderDetail.getNumberOfProducts())
                 .totalMoney(orderDetail.getTotalMoney())
-                .color(orderDetail.getColor())
+                .id(orderDetail.getIdProductVariant())
                 .build();
     }
 }
