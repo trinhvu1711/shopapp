@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ProductResponse extends BaseResponse {
+    private Long id;
     private String name;
     private String thumbnail;
     private String description;
@@ -27,6 +28,7 @@ public class ProductResponse extends BaseResponse {
     private List<Variant> prodVariants = new ArrayList<>();
     public static ProductResponse fromProduct(Product product) {
         ProductResponse productResponse = ProductResponse.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
                 .thumbnail(product.getThumbnail())

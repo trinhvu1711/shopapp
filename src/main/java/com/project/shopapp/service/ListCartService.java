@@ -20,13 +20,21 @@ public class ListCartService implements IListCartService {
 
     @Override
     public ListCart createListCart(ListCartDTO listCartDTO) throws Exception {
-        User user = userRepository
-                .findById(listCartDTO.getUserId())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + listCartDTO.getUserId()));
+        User user;
+        try {
+            user = userRepository
+                    .findById(listCartDTO.getUserId())
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + listCartDTO.getUserId()));
+        } catch (DataNotFoundException e) {
+            // Fetch the guest user with id = 0 if the user is not found
+            user = userRepository.findById(0L)
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find guest user with id: 0"));
+        }
         modelMapper.typeMap(ListCartDTO.class, ListCart.class)
                 .addMappings(mapper -> mapper.skip(ListCart::setId));
         ListCart listCart = new ListCart();
         modelMapper.map(listCartDTO, listCart);
+//        listCart.setId((long) listCartDTO.getId());
         listCart.setUser(user);
         listCart.setActive(true);
         listCartRepository.save(listCart);
@@ -35,7 +43,7 @@ public class ListCartService implements IListCartService {
 
     @Override
     public ListCart getListCart(Long id) {
-        return listCartRepository.findById(id).orElseThrow(null);
+        return listCartRepository.getListCartWithCarts(id).orElseThrow(null);
     }
 
     @Override

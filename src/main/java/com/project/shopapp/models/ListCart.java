@@ -3,8 +3,7 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="list_cart")
@@ -22,4 +21,8 @@ public class ListCart {
     private User user;
     @Column(name = "active")
     private boolean active;
+    @OneToMany(mappedBy = "listCart",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    private List<Cart> carts;
 }

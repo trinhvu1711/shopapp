@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,7 +30,7 @@ public class CartService implements ICartService {
                 .builder()
                 .listCart(listCart)
                 .numberOfProducts(cartDTO.getNumberOfProducts())
-                .totalMoney(cartDTO.getTotalMoney())
+                .totalMoney((int) (cartDTO.getPrice() * cartDTO.getNumberOfProducts()))
                 .product(product)
                 .price(cartDTO.getPrice())
                 .idProductVariant(cartDTO.getIdProductVariant())
@@ -49,10 +50,18 @@ public class CartService implements ICartService {
         Product existingProduct = productRepository.findById(cartDTO.getProductId())
                 .orElseThrow(() ->new DataNotFoundException("cannot find Product with productId"));
         existingCart.setIdProductVariant(cartDTO.getIdProductVariant());
-        existingCart.setPrice(cartDTO.getPrice());
+        existingCart.setTotalMoney((int) (existingCart.getPrice() * existingCart.getNumberOfProducts()));
         existingCart.setProduct(existingProduct);
         existingCart.setNumberOfProducts(cartDTO.getNumberOfProducts());
         existingCart.setTotalMoney(cartDTO.getTotalMoney());
+        return cartRepository.save(existingCart);
+    }
+
+    @Override
+    public Cart updateCartQuantity(Long id, int quantity) throws Exception {
+        Cart existingCart = cartRepository.findById(id)
+                .orElseThrow(() ->new DataNotFoundException("cannot find Cart with id"));
+        existingCart.setNumberOfProducts(quantity);
         return cartRepository.save(existingCart);
     }
 
@@ -64,5 +73,10 @@ public class CartService implements ICartService {
     @Override
     public List<Cart> findByListCartsId(Long listCartsId) {
         return cartRepository.findByListCartId(listCartsId);
+    }
+
+    @Override
+    public Optional<Cart> getExistingCart(Long productId, Long listCartId) {
+        return cartRepository.findByProductIdAndListCartId(productId, listCartId);
     }
 }

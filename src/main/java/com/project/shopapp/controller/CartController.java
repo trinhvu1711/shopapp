@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("${api.prefix}/carts")
@@ -30,9 +31,22 @@ public class CartController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            Cart newCart = cartService.createCart(cartDTO);
-            CartResponse cartResponse = CartResponse.fromCart(newCart);
-            return ResponseEntity.ok(cartResponse);
+            // Check if the product already exists in the cart
+            Optional<Cart> existingItemOptional = cartService.getExistingCart(cartDTO.getProductId(), cartDTO.getListCartId());
+            if (existingItemOptional.isPresent()) {
+                // If the product exists, update its quantity
+                Cart existingItem = existingItemOptional.get();
+                existingItem.setNumberOfProducts(existingItem.getNumberOfProducts() + cartDTO.getNumberOfProducts());
+                return ResponseEntity.ok(cartService.updateCartQuantity(existingItem.getId(), existingItem.getNumberOfProducts()));
+            } else {
+                // If the product doesn't exist, create a new cart item
+                Cart newCart = cartService.createCart(cartDTO);
+                CartResponse cartResponse = CartResponse.fromCart(newCart);
+                return ResponseEntity.ok(cartResponse);
+            }
+
+
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -42,8 +56,8 @@ public class CartController {
     public ResponseEntity<?> getCart(
             @Valid @PathVariable("id") Long id) {
         try {
-            Cart orderDetail = cartService.getCart(id);
-            return ResponseEntity.ok(CartResponse.fromCart(orderDetail));
+            Cart cart = cartService.getCart(id);
+            return ResponseEntity.ok(CartResponse.fromCart(cart));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -53,8 +67,8 @@ public class CartController {
     public ResponseEntity<?> getCarts(
             @Valid @PathVariable("listCartId") Long listCartId) {
         try {
-            List<Cart> orderDetails = cartService.findByListCartsId(listCartId);
-            List<CartResponse> cartResponse = orderDetails.stream().map(CartResponse::fromCart).toList();
+            List<Cart> carts = cartService.findByListCartsId(listCartId);
+            List<CartResponse> cartResponse = carts.stream().map(CartResponse::fromCart).toList();
             return ResponseEntity.ok(cartResponse);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -66,8 +80,8 @@ public class CartController {
             @Valid @PathVariable("id") Long id,
             @Valid @RequestBody CartDTO cartDTO) {
         try {
-            Cart orderDetail = cartService.updateCart(id,cartDTO);
-            return ResponseEntity.ok(orderDetail);
+            Cart cart = cartService.updateCart(id,cartDTO);
+            return ResponseEntity.ok(cart);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

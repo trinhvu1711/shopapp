@@ -14,8 +14,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListCartDTO {
-    private int id;
+//    private int id;
     @JsonProperty("user_id")
-    @Min(value = 1, message = "user's ID must be > 0")
+//    @Min(value = 1, message = "user's ID must be > 0")
     private long userId;
 }

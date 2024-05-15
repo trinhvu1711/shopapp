@@ -143,7 +143,7 @@ public class ProductController {
     }
 
     @GetMapping("")//http://localhost:8088/api/v1/products?page=10&limit=10
-    public ResponseEntity<ProductListResponse> getProducts(
+    public ResponseEntity<?> getProducts(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit) {
         PageRequest pageRequest = PageRequest.of(
@@ -152,12 +152,7 @@ public class ProductController {
         Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
         int totalPage = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
-        return ResponseEntity.ok(
-                ProductListResponse
-                        .builder()
-                        .products(products)
-                        .totalPage(totalPage)
-                        .build());
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")//http://localhost:8088/api/v1/products/6
@@ -165,7 +160,7 @@ public class ProductController {
             @PathVariable("id") Long productId) {
         try {
             Product existingProduct = productService.getProductById(productId);
-            return ResponseEntity.ok(ProductResponse.fromProduct(existingProduct));
+            return ResponseEntity.ok(existingProduct);
         } catch (DataNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
