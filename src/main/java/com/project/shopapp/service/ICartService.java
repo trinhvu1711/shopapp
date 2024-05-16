@@ -10,10 +10,9 @@ public interface ICartService {
     Cart createCart(CartDTO cartDTO) throws Exception;
     Cart getCart(Long id) throws Exception;
     Cart updateCart(Long id, CartDTO cartDTO) throws Exception;
-    Cart updateCartQuantity(Long id, int quantity) throws Exception;
+    Cart updateCartQuantity(Long id, int quantity, int totalMoney) throws Exception;
 
     void deleteCart(Long id);
     List<Cart> findByListCartsId(Long listCartsId);
-    Optional<Cart> getExistingCart(Long productId, Long listCartId);
-
+    Optional<Cart> getExistingCart(Long productId, Long listCartId, long idProductVariant);
 }

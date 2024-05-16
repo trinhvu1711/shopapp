@@ -58,10 +58,11 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Cart updateCartQuantity(Long id, int quantity) throws Exception {
+    public Cart updateCartQuantity(Long id, int quantity, int totalMoney) throws Exception {
         Cart existingCart = cartRepository.findById(id)
                 .orElseThrow(() ->new DataNotFoundException("cannot find Cart with id"));
         existingCart.setNumberOfProducts(quantity);
+        existingCart.setTotalMoney(totalMoney);
         return cartRepository.save(existingCart);
     }
 
@@ -76,7 +77,7 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public Optional<Cart> getExistingCart(Long productId, Long listCartId) {
-        return cartRepository.findByProductIdAndListCartId(productId, listCartId);
+    public Optional<Cart> getExistingCart(Long productId, Long listCartId, long idProductVariant) {
+        return cartRepository.findByProductIdAndListCartIdAndIdProductVariant(productId, listCartId, idProductVariant);
     }
 }

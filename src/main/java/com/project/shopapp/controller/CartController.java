@@ -32,12 +32,13 @@ public class CartController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             // Check if the product already exists in the cart
-            Optional<Cart> existingItemOptional = cartService.getExistingCart(cartDTO.getProductId(), cartDTO.getListCartId());
+            Optional<Cart> existingItemOptional = cartService.getExistingCart(cartDTO.getProductId(), cartDTO.getListCartId(), cartDTO.getIdProductVariant());
             if (existingItemOptional.isPresent()) {
                 // If the product exists, update its quantity
                 Cart existingItem = existingItemOptional.get();
-                existingItem.setNumberOfProducts(existingItem.getNumberOfProducts() + cartDTO.getNumberOfProducts());
-                return ResponseEntity.ok(cartService.updateCartQuantity(existingItem.getId(), existingItem.getNumberOfProducts()));
+                int totalQuantity = existingItem.getNumberOfProducts() + cartDTO.getNumberOfProducts();
+                int totalMoney = (int) (existingItem.getPrice() * totalQuantity);
+                return ResponseEntity.ok(cartService.updateCartQuantity(existingItem.getId(), totalQuantity, totalMoney));
             } else {
                 // If the product doesn't exist, create a new cart item
                 Cart newCart = cartService.createCart(cartDTO);
@@ -87,6 +88,19 @@ public class CartController {
         }
 
     }
+    @PutMapping("/update_quantity/{id}") // http://localhost:8088/api/v1/orders_detail/6?quantity=10
+    public ResponseEntity<?> updateCartQuantity(
+            @PathVariable("id") Long id,
+            @RequestParam("quantity") int quantity) {
+        try {
+            Cart existingItem = cartService.getCart(id);
+            int totalMoney = (int) (existingItem.getPrice() * quantity);
+            Cart cart = cartService.updateCartQuantity(id, quantity, totalMoney);
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @DeleteMapping("/{id}")//http://localhost:8088/api/v1/order_detail/6
     public ResponseEntity<?> deleteCart(
@@ -99,4 +113,6 @@ public class CartController {
         }
 
     }
+
+
 }
