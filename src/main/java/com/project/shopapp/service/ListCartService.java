@@ -62,10 +62,11 @@ public class ListCartService implements IListCartService {
     @Override
     public void deleteListCart(Long id) {
         ListCart listCart = listCartRepository.findById(id).orElseThrow(null);
-        if (listCart != null){
-            listCart.setActive(false);
-            listCartRepository.save(listCart);
-        }
+//        if (listCart != null){
+//            listCart.setActive(false);
+//            listCartRepository.save(listCart);
+//        }
+        listCartRepository.deleteById(id);
     }
 
 

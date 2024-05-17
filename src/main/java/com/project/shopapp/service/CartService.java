@@ -61,8 +61,10 @@ public class CartService implements ICartService {
     public Cart updateCartQuantity(Long id, int quantity, int totalMoney) throws Exception {
         Cart existingCart = cartRepository.findById(id)
                 .orElseThrow(() ->new DataNotFoundException("cannot find Cart with id"));
-        existingCart.setNumberOfProducts(quantity);
-        existingCart.setTotalMoney(totalMoney);
+        if (quantity >0){
+            existingCart.setNumberOfProducts(quantity);
+            existingCart.setTotalMoney(totalMoney);
+        }
         return cartRepository.save(existingCart);
     }
 

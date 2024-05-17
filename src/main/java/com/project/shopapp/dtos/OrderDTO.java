@@ -16,7 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class OrderDTO {
     @JsonProperty("user_id")
-    @Min(value = 1, message = "user's ID must be > 0")
     private long userId;
     @JsonProperty("full_name")
     private String fullName;
@@ -38,4 +37,6 @@ public class OrderDTO {
     private LocalDate shippingDate;
     @JsonProperty("payment_method")
     private String paymentMethod;
+    @JsonProperty("tracking_number")
+    private String trackingNumber;
 }

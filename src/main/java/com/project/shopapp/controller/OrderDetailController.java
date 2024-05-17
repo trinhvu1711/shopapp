@@ -30,8 +30,7 @@ public class OrderDetailController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             OrderDetail newOrderDetail = orderDetailService.createOrderDetail(orderDetailDTO);
-            OrderDetailResponse orderDetailResponse = OrderDetailResponse.fromOrderDetail(newOrderDetail);
-            return ResponseEntity.ok(orderDetailResponse);
+            return ResponseEntity.ok(newOrderDetail);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="orders")
@@ -51,6 +52,10 @@ public class Order {
 //    private String paymentStatus;
 //    @Column(name = "payment_date")
 //    private Date paymentDate;
+@OneToMany(mappedBy = "order",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY)
+private List<OrderDetail> orderDetails;
     @Column(name = "active")
     private boolean active;
 }

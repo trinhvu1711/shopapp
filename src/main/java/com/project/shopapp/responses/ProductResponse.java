@@ -19,7 +19,6 @@ public class ProductResponse extends BaseResponse {
     private String name;
     private String thumbnail;
     private String description;
-    @JsonProperty("category_id")
     private long categoryId;
     private String descriptionHtml;
     @JsonProperty("product_images")

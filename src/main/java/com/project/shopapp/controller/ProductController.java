@@ -149,10 +149,10 @@ public class ProductController {
         PageRequest pageRequest = PageRequest.of(
                 page, limit, Sort.by("id").ascending()
         );
-        Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
+        Page<Product> productPage = productService.getAllProducts(pageRequest);
         int totalPage = productPage.getTotalPages();
-        List<ProductResponse> products = productPage.getContent();
-        return ResponseEntity.ok(products);
+        ProductListResponse productListResponse = new ProductListResponse(productPage.getContent(), totalPage);
+        return ResponseEntity.ok(productListResponse);
     }
 
     @GetMapping("/{id}")//http://localhost:8088/api/v1/products/6

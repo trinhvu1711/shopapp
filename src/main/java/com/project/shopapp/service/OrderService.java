@@ -27,9 +27,17 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {
-        User user = userRepository
-                .findById(orderDTO.getUserId())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
+        User user;
+        try {
+            user = userRepository
+                    .findById(orderDTO.getUserId())
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDTO.getUserId()));
+        } catch (DataNotFoundException e) {
+            // Fetch the guest user with id = 0 if the user is not found
+            user = userRepository.findById(0L)
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find guest user with id: 0"));
+        }
+
         modelMapper.typeMap(OrderDTO.class, Order.class)
                 .addMappings(mapper -> mapper.skip(Order::setId));
         Order order = new Order();
@@ -43,13 +51,14 @@ public class OrderService implements IOrderService {
         }
         order.setShippingDate(shippingDate);
         order.setActive(true);
+        order.setTrackingNumber(orderDTO.getTrackingNumber());
         orderRepository.save(order);
         return order;
     }
 
     @Override
     public Order getOrder(Long id) {
-        return orderRepository.findById(id).orElseThrow(null);
+        return orderRepository.getOrderWithOrderDetails(id).orElseThrow(null);
     }
 
     @Override
