@@ -1,6 +1,5 @@
 package com.project.shopapp.repositories;
 
-import com.project.shopapp.models.ListCart;
 import com.project.shopapp.models.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +12,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserId(long userId);
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderDetails od WHERE o.id = :orderId")
     Optional<Order> getOrderWithOrderDetails(@Param("orderId") Long orderId);
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderDetails od WHERE o.trackingNumber = :trackingNumber")
+    Optional<Order> getOrderWithOrderDetailsByTrackingNumber(@Param("trackingNumber") String trackingNumber);
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderDetails od WHERE o.user.id = :userId")
+    Optional<Order> getOrderWithOrderDetailsUser(@Param("userId") Long userId);
 }

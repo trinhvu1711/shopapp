@@ -45,6 +45,16 @@ public class OrderController {
            return ResponseEntity.badRequest().body(e.getMessage());
        }
     }
+    @GetMapping("/tracking/{tracking_number}")//http://localhost:8088/api/v1/orders/6
+    public ResponseEntity<?> getOrders(
+            @Valid @PathVariable("tracking_number") String trackingNumber) {
+        try {
+            Order orders = orderService.getOrderByTrackingNumber(trackingNumber);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping("/{id}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> getOrder(

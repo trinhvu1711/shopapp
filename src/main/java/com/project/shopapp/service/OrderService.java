@@ -62,6 +62,16 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public Order getOrderByTrackingNumber(String trackingNumber) {
+        return orderRepository.getOrderWithOrderDetailsByTrackingNumber(trackingNumber).orElseThrow(null);
+    }
+
+    @Override
+    public Order getOrderByUserId(Long userId) {
+        return orderRepository.getOrderWithOrderDetailsUser(userId).orElseThrow(null);
+    }
+
+    @Override
     public Order updateOrder(Long id, OrderDTO orderDTO) throws Exception {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
