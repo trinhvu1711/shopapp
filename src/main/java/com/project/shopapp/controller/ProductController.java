@@ -144,14 +144,24 @@ public class ProductController {
 
     @GetMapping("")//http://localhost:8088/api/v1/products?page=10&limit=10
     public ResponseEntity<?> getProducts(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit) {
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+            ) {
         PageRequest pageRequest = PageRequest.of(
-                page, limit, Sort.by("id").ascending()
+                page, limit,
+                //Sort.by("createdAt").descending()
+                Sort.by("id").ascending()
         );
-        Page<Product> productPage = productService.getAllProducts(pageRequest);
+        Page<ProductResponse> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
         int totalPage = productPage.getTotalPages();
-        ProductListResponse productListResponse = new ProductListResponse(productPage.getContent(), totalPage);
+        List<ProductResponse> products = productPage.getContent();
+        ProductListResponse productListResponse = ProductListResponse
+                .builder()
+                .products(products)
+                .totalPage(totalPage)
+                .build();
         return ResponseEntity.ok(productListResponse);
     }
 

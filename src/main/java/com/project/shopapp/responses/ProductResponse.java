@@ -21,9 +21,7 @@ public class ProductResponse extends BaseResponse {
     private String description;
     private long categoryId;
     private String descriptionHtml;
-    @JsonProperty("product_images")
     private List<ProductImage> productImages = new ArrayList<>();
-    @JsonProperty("product_variants")
     private List<Variant> prodVariants = new ArrayList<>();
     public static ProductResponse fromProduct(Product product) {
         ProductResponse productResponse = ProductResponse.builder()

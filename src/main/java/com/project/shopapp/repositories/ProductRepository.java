@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
     Page<Product> findAll(Pageable pageable);
-    @Query("SELECT DISTINCT p FROM Product p " +
-            "LEFT JOIN FETCH p.productImages pi " +
-            "LEFT JOIN FETCH p.variants v " +
-            "WHERE p.id = :productId")
-    Optional<Product> getDetailProduct(@Param("productId") Long productId);
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(:categoryId IS NULL OR :categoryId = 0 OR p.category.id = :categoryId) " +
+            "AND (:keyword IS NULL OR :keyword = '' OR p.name LIKE %:keyword% OR p.description LIKE %:keyword%)")
+    Page<Product> searchProducts
+            (@Param("categoryId") Long categoryId,
+             @Param("keyword") String keyword, Pageable pageable);
 
     // Query to fetch product with images
     @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.productImages pi WHERE p.id = :productId")
