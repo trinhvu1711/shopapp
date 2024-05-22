@@ -14,4 +14,5 @@ public class CategoryDTO {
     private String name;
     @JsonProperty("image_url")
     private String imageUrl;
+    private String slug;
 }

@@ -154,12 +154,11 @@ public class ProductController {
                 //Sort.by("createdAt").descending()
                 Sort.by("id").ascending()
         );
-        Page<ProductResponse> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
+        Page<Product> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
         int totalPage = productPage.getTotalPages();
-        List<ProductResponse> products = productPage.getContent();
         ProductListResponse productListResponse = ProductListResponse
                 .builder()
-                .products(products)
+                .products(productPage.getContent())
                 .totalPage(totalPage)
                 .build();
         return ResponseEntity.ok(productListResponse);

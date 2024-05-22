@@ -33,5 +33,5 @@ build/
 .vscode/
 
 # Exclude all PNG IMG image files
-*.png
-*.jpg
+# *.png
+# *.jpg

@@ -19,4 +19,5 @@ public class Category {
     private String name;
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
+    private String slug;
 }

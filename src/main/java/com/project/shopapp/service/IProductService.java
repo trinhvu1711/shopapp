@@ -19,7 +19,7 @@ public interface IProductService {
 
 //    Page<Product> getAllProducts(PageRequest pageRequest, String keyword, Long categoryId);
 
-    Page<ProductResponse> getAllProducts(String keyword,
+    Page<Product> getAllProducts(String keyword,
                                          Long categoryId, PageRequest pageRequest);
 
     Product updateProduct(long id, ProductDTO productDTO) throws DataNotFoundException;
