@@ -43,8 +43,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO
-    ) {
+    ) throws Exception {
         String token = userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword());
-        return ResponseEntity.ok("Some token");
+        return ResponseEntity.ok(token);
     }
 }
