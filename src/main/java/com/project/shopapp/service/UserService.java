@@ -7,6 +7,8 @@ import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepository;
 import com.project.shopapp.repositories.UserRepository;
+import com.project.shopapp.responses.LoginResponse;
+import com.project.shopapp.responses.UserResponse;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -53,7 +55,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String email, String password) throws Exception{
+    public LoginResponse login(String email, String password) throws Exception{
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isEmpty()){
             throw new DataNotFoundException("Invalid email / password");
@@ -70,7 +72,37 @@ public class UserService implements IUserService{
             }
         }
         authenticationManager.authenticate(authenticationToken);
-        return jwtTokenUtil.generateToken(existingUser);
+        String jwtToken = jwtTokenUtil.generateToken(existingUser);
+        UserResponse userResponse = UserResponse.builder()
+                .id(existingUser.getId())
+                .active(existingUser.isActive())
+                .role(existingUser.getRole())
+                .googleAccountId(existingUser.getGoogleAccountId())
+                .address(existingUser.getAddress())
+                .phoneNumber(existingUser.getPhoneNumber())
+                .fullName(existingUser.getFullName())
+                .facebookAccountId(existingUser.getFacebookAccountId())
+                .email(existingUser.getEmail())
+                .dateOfBirth(existingUser.getDateOfBirth())
+                .build();
+        return LoginResponse.builder()
+                .accessToken(jwtToken)
+                .userResponse(userResponse)
+                .build();
+    }
+
+    @Override
+    public User getUserDetailsFromToken(String extractedToken) throws Exception {
+        if(jwtTokenUtil.isTokenExpired(extractedToken)){
+            throw new Exception("Token is expired");
+        }
+        String email = jwtTokenUtil.extractEmail(extractedToken);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()){
+            return user.get();
+        }else {
+            throw new Exception("User not found");
+        }
     }
 
     public RoleRepository getRoleRepository() {
