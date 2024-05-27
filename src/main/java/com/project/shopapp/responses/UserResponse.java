@@ -21,4 +21,5 @@ public class UserResponse {
     private int facebookAccountId;
     private int googleAccountId;
     private Role role;
+    private String image;
 }

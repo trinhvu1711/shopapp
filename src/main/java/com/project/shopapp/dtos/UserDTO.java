@@ -34,4 +34,5 @@ public class UserDTO {
     @NotNull(message = "Role id is required")
     @JsonProperty("role_id")
     private long roleId;
+    private String image;
 }

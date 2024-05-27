@@ -44,6 +44,7 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    private String image;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

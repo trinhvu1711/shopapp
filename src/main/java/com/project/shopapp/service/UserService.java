@@ -84,6 +84,7 @@ public class UserService implements IUserService{
                 .facebookAccountId(existingUser.getFacebookAccountId())
                 .email(existingUser.getEmail())
                 .dateOfBirth(existingUser.getDateOfBirth())
+                .image(existingUser.getImage())
                 .build();
         return LoginResponse.builder()
                 .accessToken(jwtToken)
