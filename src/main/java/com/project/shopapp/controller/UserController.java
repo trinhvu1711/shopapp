@@ -2,7 +2,9 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
+import com.project.shopapp.models.User;
 import com.project.shopapp.service.IUserService;
+import com.project.shopapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final IUserService userService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
@@ -41,10 +43,21 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<?> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO
+    ) throws Exception {
+        return ResponseEntity.ok(userService.login(userLoginDTO.getEmail(), userLoginDTO.getPassword()));
+    }
+    @PostMapping("/details")
+    public ResponseEntity<?> getUserDetails(
+            @RequestHeader("Authorization") String token
     ) {
-        String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
-        return ResponseEntity.ok("Some token");
+        try {
+            String extractedToken = token.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(user);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

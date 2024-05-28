@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+
     @PostMapping("")
     public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO,
                                          BindingResult result) {
@@ -38,20 +39,21 @@ public class OrderController {
     @GetMapping("/user/{user_id}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> getOrders(
             @Valid @PathVariable("user_id") Long userId) {
-       try {
-           List<Order> orders = orderService.findByUserId(userId);
-           return ResponseEntity.ok(orders);
-       } catch (Exception e){
-           return ResponseEntity.badRequest().body(e.getMessage());
-       }
+        try {
+            List<Order> orders = orderService.findByUserId(userId);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
     @GetMapping("/tracking/{tracking_number}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> getOrders(
             @Valid @PathVariable("tracking_number") String trackingNumber) {
         try {
             Order orders = orderService.getOrderByTrackingNumber(trackingNumber);
             return ResponseEntity.ok(orders);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -62,7 +64,7 @@ public class OrderController {
         try {
             Order existingOrder = orderService.getOrder(orderId);
             return ResponseEntity.ok(existingOrder);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -74,7 +76,7 @@ public class OrderController {
         try {
             Order existingOrder = orderService.updateOrder(id, orderDTO);
             return ResponseEntity.ok(existingOrder);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
@@ -86,9 +88,22 @@ public class OrderController {
         try {
             orderService.deleteOrder(id);
             return ResponseEntity.ok(String.format("delete order with order id = %s", id));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
+
+    @PostMapping("/details")//http://localhost:8088/api/v1/orders/details
+    public ResponseEntity<?> getOrderByToken(
+            @RequestHeader("Authorization") String token, @RequestParam(defaultValue = "") String status) {
+        try {
+            String extractedToken = token.substring(7);
+            List<Order> existingOrder = orderService.getOrdersFromToken(extractedToken, status);
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

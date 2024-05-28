@@ -1,5 +1,6 @@
 package com.project.shopapp.service;
 
+import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Order;
@@ -7,9 +8,7 @@ import com.project.shopapp.models.OrderStatus;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.OrderRepository;
 import com.project.shopapp.repositories.UserRepository;
-import com.project.shopapp.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class OrderService implements IOrderService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
-
+    private final JwtTokenUtil jwtTokenUtil;
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {
         User user;
@@ -96,5 +95,23 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Order> getOrdersFromToken(String extractedToken, String status) throws Exception {
+        if(jwtTokenUtil.isTokenExpired(extractedToken)){
+            throw new Exception("Token is expired");
+        }
+        String email = jwtTokenUtil.extractEmail(extractedToken);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()){
+            Optional<List<Order>> order = orderRepository.getOrderByUserAndStatus(user.get(),status);
+            if (order.isPresent()){
+                return order.get();
+            }
+        }else {
+            throw new Exception("Order not found");
+        }
+        return null;
     }
 }

@@ -17,6 +17,8 @@ public class UserDTO {
     @JsonProperty("phone_number")
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
+    @NotBlank(message = "Email is required")
+    private String email;
     @NotBlank(message = "Address is required")
     private String address;
     @NotBlank(message = "Password cant be blank")
@@ -32,4 +34,5 @@ public class UserDTO {
     @NotNull(message = "Role id is required")
     @JsonProperty("role_id")
     private long roleId;
+    private String image;
 }
