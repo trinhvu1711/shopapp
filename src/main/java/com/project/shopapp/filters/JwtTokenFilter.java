@@ -34,12 +34,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/products", "/products/**",
             "/categories",
             "/users/register", "/users/login",
-            "/orders", "/orders/**",
+            "/orders", "/orders/**", "/orders/details",
             "/orders/tracking/**",
             "/carts/update_quantity/**",
             "/order_details", "/order_details/**",
             "/list_carts", "/list_carts/**",
-            "/carts", "/carts/**"
+            "/carts", "/carts/**",  "/wishlist/**"
     );
 
     @Override

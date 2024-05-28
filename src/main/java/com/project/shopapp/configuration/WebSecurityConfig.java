@@ -53,6 +53,8 @@ public class WebSecurityConfig {
                                              String.format("%s/orders", apiPrefix)).permitAll()
                             .requestMatchers(GET,
                                              String.format("%s/orders/tracking/**", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
+                                             String.format("%s/orders/details", apiPrefix)).permitAll()
                             .requestMatchers(PUT,
                                              String.format("%s/orders/**", apiPrefix)).hasRole("ADMIN")
 //                            Product
@@ -83,7 +85,20 @@ public class WebSecurityConfig {
                                              String.format("%s/order_details/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                              String.format("%s/order_details", apiPrefix)).permitAll()
+
+//                          Wish list
+                            .requestMatchers(POST,
+                                             String.format("%s/wishlist", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
+                                             String.format("%s/wishlist/details", apiPrefix)).permitAll()
+                            .requestMatchers(DELETE,
+                                             String.format("%s/wishlist/**", apiPrefix)).permitAll()
+
+
                             .anyRequest().authenticated();
+
+
+
 //                            .anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable);
