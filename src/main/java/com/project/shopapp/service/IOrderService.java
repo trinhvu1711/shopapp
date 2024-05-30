@@ -15,4 +15,6 @@ public interface IOrderService {
     List<Order> findByUserId(Long userId);
 
     List<Order> getOrdersFromToken(String extractedToken, String status) throws Exception;
+
+    Order updateOrderStatus(String extractedToken, String trackingNumber, String status) throws Exception;
 }

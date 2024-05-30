@@ -54,6 +54,8 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                              String.format("%s/orders/tracking/**", apiPrefix)).permitAll()
                             .requestMatchers(POST,
+                                             String.format("%s/orders/cancel", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
                                              String.format("%s/orders/details", apiPrefix)).permitAll()
                             .requestMatchers(PUT,
                                              String.format("%s/orders/**", apiPrefix)).hasRole("ADMIN")

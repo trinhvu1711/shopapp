@@ -106,4 +106,15 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/cancel")//http://localhost:8088/api/v1/orders/cancel
+    public ResponseEntity<?> cancelOrder(
+            @RequestHeader("Authorization") String token, @RequestParam String trackingNumber) {
+        try {
+            String extractedToken = token.substring(7);
+            Order existingOrder = orderService.updateOrderStatus(extractedToken,trackingNumber, "canceled");
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -22,5 +22,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND (:status IS NULL OR :status = '' OR o.status = :status)")
     Optional<List<Order>> getOrderByUserAndStatus(@Param("user") User user,
                                             @Param("status") String status);
-
+    Optional<Order> getByTrackingNumber(@Param("trackingNumber") String trackingNumber);
 }

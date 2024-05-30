@@ -24,6 +24,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
     private final JwtTokenUtil jwtTokenUtil;
+
     @Override
     public Order createOrder(OrderDTO orderDTO) throws Exception {
         User user;
@@ -86,7 +87,7 @@ public class OrderService implements IOrderService {
     @Override
     public void deleteOrder(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(null);
-        if (order != null){
+        if (order != null) {
             order.setActive(false);
             orderRepository.save(order);
         }
@@ -99,19 +100,36 @@ public class OrderService implements IOrderService {
 
     @Override
     public List<Order> getOrdersFromToken(String extractedToken, String status) throws Exception {
-        if(jwtTokenUtil.isTokenExpired(extractedToken)){
+        if (jwtTokenUtil.isTokenExpired(extractedToken)) {
             throw new Exception("Token is expired");
         }
         String email = jwtTokenUtil.extractEmail(extractedToken);
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()){
-            Optional<List<Order>> order = orderRepository.getOrderByUserAndStatus(user.get(),status);
-            if (order.isPresent()){
+        if (user.isPresent()) {
+            Optional<List<Order>> order = orderRepository.getOrderByUserAndStatus(user.get(), status);
+            if (order.isPresent()) {
                 return order.get();
             }
-        }else {
+        } else {
             throw new Exception("Order not found");
         }
         return null;
+    }
+
+    @Override
+    public Order updateOrderStatus(String extractedToken, String trackingNumber, String status) throws Exception {
+        if (jwtTokenUtil.isTokenExpired(extractedToken)) {
+            throw new Exception("Token is expired");
+        }
+        String email = jwtTokenUtil.extractEmail(extractedToken);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            Order existingOrder = orderRepository.getByTrackingNumber(trackingNumber)
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find order with tracking id: " + trackingNumber));
+            existingOrder.setStatus(OrderStatus.CANCELED);
+            return orderRepository.save(existingOrder);
+        } else {
+            throw new Exception("Can't update status Order ");
+        }
     }
 }
