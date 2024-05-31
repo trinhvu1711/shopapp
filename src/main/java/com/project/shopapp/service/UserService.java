@@ -27,16 +27,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+
     @Override
     public User createUser(UserDTO userDTO) throws DataNotFoundException {
         String email = userDTO.getEmail();
-        if (userRepository.existsByEmail(email)){
+        if (userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Email already exists");
         }
         User newUser = User.builder()
@@ -49,20 +50,20 @@ public class UserService implements IUserService{
                 .googleAccountId(userDTO.getGoogleAccountId())
                 .email(userDTO.getEmail())
                 .build();
-        Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(()-> new DataNotFoundException("Role not found"));
+        Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(() -> new DataNotFoundException("Role not found"));
         newUser.setRole(role);
-         if (userDTO.getFacebookAccountId() == 0 && userDTO.getGoogleAccountId() == 0){
-             String password = userDTO.getPassword();
-             String encodedPassword = passwordEncoder.encode(password);
-             newUser.setPassword(encodedPassword);
-         }
+        if (userDTO.getFacebookAccountId() == 0 && userDTO.getGoogleAccountId() == 0) {
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            newUser.setPassword(encodedPassword);
+        }
         return userRepository.save(newUser);
     }
 
     @Override
-    public LoginResponse login(String email, String password) throws Exception{
+    public LoginResponse login(String email, String password) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new DataNotFoundException("Invalid email / password");
         }
         User existingUser = optionalUser.get();
@@ -71,8 +72,8 @@ public class UserService implements IUserService{
         );
 
         if (existingUser.getFacebookAccountId() == 0
-                && existingUser.getGoogleAccountId() == 0){
-            if (!passwordEncoder.matches(password, existingUser.getPassword())){
+                && existingUser.getGoogleAccountId() == 0) {
+            if (!passwordEncoder.matches(password, existingUser.getPassword())) {
                 throw new BadCredentialsException("Wrong email or password");
             }
         }
@@ -99,27 +100,27 @@ public class UserService implements IUserService{
 
     @Override
     public User getUserDetailsFromToken(String extractedToken) throws Exception {
-        if(jwtTokenUtil.isTokenExpired(extractedToken)){
+        if (jwtTokenUtil.isTokenExpired(extractedToken)) {
             throw new Exception("Token is expired");
         }
         String email = jwtTokenUtil.extractEmail(extractedToken);
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
-        }else {
+        } else {
             throw new Exception("User not found");
         }
     }
-    @Override
+
     public List<UserAdminResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserAdminResponse> userResponses = users.stream().map(user -> {
             return UserAdminResponse.builder()
                     .id(user.getId())
-                    .fullName(user.getFullName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .role(user.getRole().getName())
-                    .isActive(user.isActive() == true ? "Active" : "Inactive")
+                    .fullName(user.getFullName() == null ? "N/A" : user.getFullName())
+                    .phoneNumber(user.getPhoneNumber() == null ? "N/A" : user.getPhoneNumber())
+                    .role(user.getRole() == null ? "GUEST" : user.getRole().getName())
+                    .isActive(user.isActive() ? "Active" : "Inactive")
                     .build();
         }).collect(Collectors.toList());
         return userResponses;
@@ -127,18 +128,30 @@ public class UserService implements IUserService{
 
     @Override
     public User updateUserAdmin(long id, UserUpdateDTO userDTO) throws DataNotFoundException {
-        User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
-        existingUser.setFullName(userDTO.getFullName());
-        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
-        existingUser.setAddress(userDTO.getAddress());
-        existingUser.setDateOfBirth(userDTO.getDateOfBirth());
-        existingUser.setImage(userDTO.getImage());
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        if (userDTO.getFullName() != null) {
+            existingUser.setFullName(userDTO.getFullName());
+        }
+        if (userDTO.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        }
+        if (userDTO.getAddress() != null) {
+            existingUser.setAddress(userDTO.getAddress());
+        }
+        if (userDTO.getDateOfBirth() != null) {
+            existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+        }
+        if (userDTO.getImage() != null) {
+            existingUser.setImage(userDTO.getImage());
+        }
+
         return userRepository.save(existingUser);
     }
 
     @Override
     public boolean deleteUser(long id) throws DataNotFoundException {
-        User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
         userRepository.deleteById(existingUser.getId());
         return !userRepository.existsById(id);
     }
@@ -174,7 +187,7 @@ public class UserService implements IUserService{
         // Update the password if it is provided in the DTO
         if (userDTO.getPassword() != null
                 && !userDTO.getPassword().isEmpty()) {
-            if(!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
+            if (!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
                 throw new DataNotFoundException("Password and retype password not the same");
             }
             String newPassword = userDTO.getPassword();

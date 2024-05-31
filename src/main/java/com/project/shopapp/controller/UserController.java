@@ -9,6 +9,7 @@ import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    @PreAuthorize("HasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> createUserAdmin(
             @Valid @RequestBody UserDTO userDTO,
             BindingResult result) {
@@ -77,7 +78,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user/{id}")
-    @PreAuthorize("HasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserUpdateDTO userDTO
@@ -91,7 +92,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete-user/{id}")
-    @PreAuthorize("HasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long id
     ) {

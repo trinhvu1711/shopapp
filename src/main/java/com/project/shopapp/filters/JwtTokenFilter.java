@@ -40,6 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/order_details", "/order_details/**",
             "/list_carts", "/list_carts/**",
             "/carts", "/carts/**",  "/wishlist/**",
+            "/users/getAll/**",
             "/products/search"
     );
 
