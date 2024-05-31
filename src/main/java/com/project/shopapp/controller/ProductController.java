@@ -7,7 +7,6 @@ import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.responses.ProductListResponse;
-import com.project.shopapp.responses.ProductResponse;
 import com.project.shopapp.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -106,17 +105,17 @@ public class ProductController {
     }
 
     @GetMapping("/images/{imageName}")
-    public ResponseEntity<?> viewImage(@PathVariable String imageName){
+    public ResponseEntity<?> viewImage(@PathVariable String imageName) {
         try {
-            Path imagePath = Paths.get("uploads/"+imageName);
+            Path imagePath = Paths.get("uploads/" + imageName);
             UrlResource resource = new UrlResource(imagePath.toUri());
-            if (resource.exists()){
+            if (resource.exists()) {
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
                         .body(resource);
-            }else{
+            } else {
                 return ResponseEntity.notFound().build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -142,13 +141,19 @@ public class ProductController {
         return contentType != null && contentType.startsWith("image/");
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam(defaultValue = "") String search
+                                           ) throws DataNotFoundException {
+        return ResponseEntity.ok(productService.searchProducts(search));
+    }
+
     @GetMapping("")//http://localhost:8088/api/v1/products?page=10&limit=10
     public ResponseEntity<?> getProducts(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
-            ) {
+    ) {
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
                 //Sort.by("createdAt").descending()

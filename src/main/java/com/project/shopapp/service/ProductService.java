@@ -7,15 +7,18 @@ import com.project.shopapp.exceptions.InvalidParamException;
 import com.project.shopapp.models.Category;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
+import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.CategoryRepository;
 import com.project.shopapp.repositories.ProductImageRepository;
 import com.project.shopapp.repositories.ProductRepository;
-import com.project.shopapp.responses.ProductResponse;
+import com.project.shopapp.responses.ProductAdminResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,7 +66,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Page<Product> getAllProducts(String keyword,
-                                                Long categoryId, PageRequest pageRequest) {
+                                        Long categoryId, PageRequest pageRequest) {
         // Lấy danh sách sản phẩm theo trang (page), giới hạn (limit), và categoryId (nếu có)
         Page<Product> productsPage;
         productsPage = productRepository.searchProducts(categoryId, keyword, pageRequest);
@@ -110,5 +113,33 @@ public class ProductService implements IProductService {
             throw new InvalidParamException("Number of image must be <= " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS);
         }
         return productImageRepository.save(newProductImage);
+    }
+
+    @Override
+    public List<ProductAdminResponse> searchProducts(String keyword) {
+        List<Product> products = productRepository.searchProducts(keyword);
+        List<ProductAdminResponse> productAdminResponses = new ArrayList<>();
+
+        for (Product product : products) {
+            List<Variant> variants = product.getVariants();
+            List<String> variantNames = new ArrayList<>();
+            List<String> variantPrices = new ArrayList<>();
+            if (variants.size() > 0) {
+                variants.stream().forEach(variant -> {
+                    variantNames.add(variant.getName());
+                    variantPrices.add(variant.getPrice() + " " + variant.getCurrency());
+                });
+            }
+            ProductAdminResponse productAdminResponse = ProductAdminResponse.builder()
+                    .id(product.getId())
+                    .name(product.getName())
+                    .category(product.getCategory().getName())
+                    .variant(variantNames)
+                    .price(variantPrices)
+                    .description(product.getDescription())
+                    .build();
+            productAdminResponses.add(productAdminResponse);
+        }
+        return productAdminResponses;
     }
 }

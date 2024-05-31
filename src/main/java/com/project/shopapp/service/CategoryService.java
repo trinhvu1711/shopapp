@@ -3,6 +3,7 @@ package com.project.shopapp.service;
 import com.project.shopapp.dtos.CategoryDTO;
 import com.project.shopapp.models.Category;
 import com.project.shopapp.repositories.CategoryRepository;
+import com.project.shopapp.responses.CategoriesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,14 @@ public class CategoryService implements ICategoryService {
     @Override
     public void deleteCategory(long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<CategoriesResponse> getAllCategoriesAdmin() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream().map(category -> CategoriesResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build()).toList();
     }
 }
