@@ -1,6 +1,7 @@
 package com.project.shopapp.service;
 
 import com.project.shopapp.component.JwtTokenUtil;
+import com.project.shopapp.dtos.UpdateUserDTO;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserUpdateDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
@@ -11,7 +12,6 @@ import com.project.shopapp.repositories.UserRepository;
 import com.project.shopapp.responses.LoginResponse;
 import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.responses.UserResponse;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -140,6 +141,48 @@ public class UserService implements IUserService{
         User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
         userRepository.deleteById(existingUser.getId());
         return !userRepository.existsById(id);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(Long userId, UpdateUserDTO userDTO) throws Exception {
+        User existingUser = userRepository.findById(userId).
+                orElseThrow(() -> new DataNotFoundException("User not found"));
+        String newEmail = userDTO.getEmail();
+        if (!existingUser.getEmail().equals(newEmail) &&
+                userRepository.existsByEmail(newEmail)
+        ) {
+
+            throw new Exception("Email already exist");
+        }
+        if (userDTO.getFullName() != null) {
+            existingUser.setFullName(userDTO.getFullName());
+        }
+        if (userDTO.getAddress() != null) {
+            existingUser.setAddress(userDTO.getAddress());
+        }
+        if (userDTO.getDateOfBirth() != null) {
+            existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+        }
+        if (userDTO.getFacebookAccountId() > 0) {
+            existingUser.setFacebookAccountId(userDTO.getFacebookAccountId());
+        }
+        if (userDTO.getGoogleAccountId() > 0) {
+            existingUser.setGoogleAccountId(userDTO.getGoogleAccountId());
+        }
+
+        // Update the password if it is provided in the DTO
+        if (userDTO.getPassword() != null
+                && !userDTO.getPassword().isEmpty()) {
+            if(!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
+                throw new DataNotFoundException("Password and retype password not the same");
+            }
+            String newPassword = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodedPassword);
+        }
+        // Save the updated user
+        return userRepository.save(existingUser);
     }
 
     public RoleRepository getRoleRepository() {

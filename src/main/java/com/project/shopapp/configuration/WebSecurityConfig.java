@@ -50,6 +50,8 @@ public class WebSecurityConfig {
                                     String.format("%s/users/login", apiPrefix)
                             )
                             .permitAll()
+                            .requestMatchers(PUT,
+                                             String.format("%s/users/details/**", apiPrefix)).permitAll()
 //                            Order
                             .requestMatchers(GET,
                                              String.format("%s/orders/**", apiPrefix)).permitAll()
