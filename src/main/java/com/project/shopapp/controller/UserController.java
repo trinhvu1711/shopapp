@@ -82,7 +82,7 @@ public class UserController {
             @Valid @RequestBody UserUpdateDTO userDTO
     ) {
         try {
-            userService.updateUser(id, userDTO);
+            userService.updateUserAdmin(id, userDTO);
             return ResponseEntity.ok("Update user successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

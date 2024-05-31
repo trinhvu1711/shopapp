@@ -125,7 +125,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User updateUser(long id, UserUpdateDTO userDTO) throws DataNotFoundException {
+    public User updateUserAdmin(long id, UserUpdateDTO userDTO) throws DataNotFoundException {
         User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setPhoneNumber(userDTO.getPhoneNumber());

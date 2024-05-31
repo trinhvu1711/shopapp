@@ -18,6 +18,6 @@ public interface IUserService {
 
     List<UserAdminResponse> getAllUsers();
 
-    User updateUser(long id, UserUpdateDTO userDTO) throws DataNotFoundException;
+    User updateUserAdmin(long id, UserUpdateDTO userDTO) throws DataNotFoundException;
     boolean deleteUser(long id) throws DataNotFoundException;
 }
