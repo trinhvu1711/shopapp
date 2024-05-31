@@ -2,12 +2,14 @@ package com.project.shopapp.service;
 
 import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.UserDTO;
+import com.project.shopapp.dtos.UserUpdateDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepository;
 import com.project.shopapp.repositories.UserRepository;
 import com.project.shopapp.responses.LoginResponse;
+import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.responses.UserResponse;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -104,6 +108,38 @@ public class UserService implements IUserService{
         }else {
             throw new Exception("User not found");
         }
+    }
+    @Override
+    public List<UserAdminResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserAdminResponse> userResponses = users.stream().map(user -> {
+            return UserAdminResponse.builder()
+                    .id(user.getId())
+                    .fullName(user.getFullName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .role(user.getRole().getName())
+                    .isActive(user.isActive() == true ? "Active" : "Inactive")
+                    .build();
+        }).collect(Collectors.toList());
+        return userResponses;
+    }
+
+    @Override
+    public User updateUser(long id, UserUpdateDTO userDTO) throws DataNotFoundException {
+        User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
+        existingUser.setFullName(userDTO.getFullName());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setAddress(userDTO.getAddress());
+        existingUser.setDateOfBirth(userDTO.getDateOfBirth());
+        existingUser.setImage(userDTO.getImage());
+        return userRepository.save(existingUser);
+    }
+
+    @Override
+    public boolean deleteUser(long id) throws DataNotFoundException {
+        User existingUser = userRepository.findById(id).orElseThrow(()-> new DataNotFoundException("User not found"));
+        userRepository.deleteById(existingUser.getId());
+        return !userRepository.existsById(id);
     }
 
     public RoleRepository getRoleRepository() {
