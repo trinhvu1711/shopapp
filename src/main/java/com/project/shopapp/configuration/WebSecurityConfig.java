@@ -47,7 +47,8 @@ public class WebSecurityConfig {
                     request
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
-                                    String.format("%s/users/login", apiPrefix)
+                                    String.format("%s/users/login", apiPrefix),
+                                    String.format("%s/users/getAll", apiPrefix)
                             )
                             .permitAll()
                             .requestMatchers(PUT, String.format("%s/users/update-user/**", apiPrefix)).hasAuthority("ROLE_ADMIN")
