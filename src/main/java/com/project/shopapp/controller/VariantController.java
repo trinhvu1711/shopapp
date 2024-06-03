@@ -3,7 +3,7 @@ package com.project.shopapp.controller;
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Variant;
-import com.project.shopapp.service.VariantService;
+import com.project.shopapp.service.variant.VariantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

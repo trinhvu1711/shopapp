@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.listCart;
 
 import com.project.shopapp.dtos.ListCartDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;

@@ -3,7 +3,7 @@ package com.project.shopapp.controller;
 import com.project.shopapp.dtos.OrderDetailDTO;
 import com.project.shopapp.models.OrderDetail;
 import com.project.shopapp.responses.OrderDetailResponse;
-import com.project.shopapp.service.OrderDetailService;
+import com.project.shopapp.service.orderDetail.OrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

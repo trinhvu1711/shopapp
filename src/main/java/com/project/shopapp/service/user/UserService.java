@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.user;
 
 import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.UpdateUserDTO;

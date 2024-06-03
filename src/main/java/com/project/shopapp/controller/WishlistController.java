@@ -2,7 +2,7 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.WishListDTO;
 import com.project.shopapp.models.WishList;
-import com.project.shopapp.service.WishListService;
+import com.project.shopapp.service.wishList.WishListService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

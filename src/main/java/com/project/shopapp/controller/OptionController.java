@@ -3,7 +3,7 @@ package com.project.shopapp.controller;
 import com.project.shopapp.dtos.OptionDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Option;
-import com.project.shopapp.service.OptionService;
+import com.project.shopapp.service.option.OptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,7 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.variant;
 
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
-import com.project.shopapp.models.Option;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.OptionRepository;

@@ -6,7 +6,7 @@ import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.dtos.UserUpdateDTO;
 import com.project.shopapp.models.User;
 import com.project.shopapp.responses.UserAdminResponse;
-import com.project.shopapp.service.UserService;
+import com.project.shopapp.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

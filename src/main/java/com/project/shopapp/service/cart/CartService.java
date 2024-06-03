@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.cart;
 
 import com.project.shopapp.dtos.CartDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
@@ -8,6 +8,7 @@ import com.project.shopapp.models.Product;
 import com.project.shopapp.repositories.CartRepository;
 import com.project.shopapp.repositories.ListCartRepository;
 import com.project.shopapp.repositories.ProductRepository;
+import com.project.shopapp.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

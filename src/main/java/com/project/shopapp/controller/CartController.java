@@ -1,10 +1,9 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.CartDTO;
-import com.project.shopapp.dtos.CartDTO;
 import com.project.shopapp.models.Cart;
 import com.project.shopapp.responses.CartResponse;
-import com.project.shopapp.service.CartService;
+import com.project.shopapp.service.cart.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
-import com.project.shopapp.service.OrderService;
+import com.project.shopapp.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
