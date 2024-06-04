@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.order;
 
 import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.OrderDTO;

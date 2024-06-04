@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.variant;
 
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;

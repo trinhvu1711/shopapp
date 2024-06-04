@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.cart;
 
 import com.project.shopapp.dtos.CartDTO;
 import com.project.shopapp.models.Cart;

@@ -105,8 +105,11 @@ public class WebSecurityConfig {
                                              String.format("%s/wishlist/details", apiPrefix)).permitAll()
                             .requestMatchers(DELETE,
                                              String.format("%s/wishlist/**", apiPrefix)).permitAll()
-
-
+//                          Coupon
+                            .requestMatchers(GET,
+                                             String.format("%s/coupons/calculate", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                             String.format("%s/coupons", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
 
 

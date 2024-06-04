@@ -1,10 +1,9 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.option;
 
 import com.project.shopapp.dtos.OptionDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Option;
 import com.project.shopapp.models.Variant;
-import com.project.shopapp.repositories.CategoryRepository;
 import com.project.shopapp.repositories.OptionRepository;
 import com.project.shopapp.repositories.VariantRepository;
 import lombok.RequiredArgsConstructor;

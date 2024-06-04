@@ -2,7 +2,7 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.ListCartDTO;
 import com.project.shopapp.models.ListCart;
-import com.project.shopapp.service.ListCartService;
+import com.project.shopapp.service.listCart.ListCartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.product;
 
 import com.project.shopapp.dtos.ProductDTO;
 import com.project.shopapp.dtos.ProductImageDTO;

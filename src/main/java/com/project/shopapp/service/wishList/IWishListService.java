@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.wishList;
 
 import com.project.shopapp.dtos.WishListDTO;
 import com.project.shopapp.models.WishList;

@@ -1,4 +1,4 @@
-package com.project.shopapp.service;
+package com.project.shopapp.service.listCart;
 
 import com.project.shopapp.dtos.ListCartDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
@@ -68,7 +68,6 @@ public class ListCartService implements IListCartService {
 //        }
         listCartRepository.deleteById(id);
     }
-
 
     @Override
     public List<ListCart> findByUserId(Long userId) {

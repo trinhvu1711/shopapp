@@ -5,6 +5,4 @@ public class OrderStatus {
     public static final String SHIPPING = "shipping";
     public static final String DELIVERED = "delivered";
     public static final String CANCELED = "cancelled";
-
-
 }
