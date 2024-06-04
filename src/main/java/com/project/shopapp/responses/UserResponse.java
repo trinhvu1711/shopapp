@@ -1,6 +1,7 @@
 package com.project.shopapp.responses;
 
 import com.project.shopapp.models.Role;
+import com.project.shopapp.models.User;
 import lombok.*;
 
 import java.util.Date;
@@ -22,4 +23,17 @@ public class UserResponse {
     private int googleAccountId;
     private Role role;
     private String image;
+    public static UserResponse fromUser(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .active(user.isActive())
+                .dateOfBirth(user.getDateOfBirth())
+                .facebookAccountId(user.getFacebookAccountId())
+                .googleAccountId(user.getGoogleAccountId())
+                .role(user.getRole())
+                .build();
+    }
 }
