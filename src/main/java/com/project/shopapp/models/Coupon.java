@@ -3,6 +3,8 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="coupons")
 @Data
@@ -19,4 +21,9 @@ public class Coupon {
     private String code;
     @Column(name = "active", nullable = false)
     private boolean active;
+//    @OneToMany(mappedBy = "coupon",
+//            cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY)
+//    private List<CouponCondition> couponCondition;
+
 }

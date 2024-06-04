@@ -69,7 +69,6 @@ public class ListCartService implements IListCartService {
         listCartRepository.deleteById(id);
     }
 
-
     @Override
     public List<ListCart> findByUserId(Long userId) {
         return listCartRepository.findByUserId(userId);

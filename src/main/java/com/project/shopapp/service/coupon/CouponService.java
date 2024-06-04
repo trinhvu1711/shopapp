@@ -40,7 +40,7 @@ public class CouponService implements ICouponService {
                 if(operator.equals(">") && updateTotalAmount > Double.parseDouble(value)){
                     discount += updateTotalAmount * percentDiscount / 100;
                 }
-            }else if (attribute.equals("available_date")){
+            }else if (attribute.equals("applicable_date")){
                 LocalDate applicableDate = LocalDate.parse(value);
                 LocalDate currentDate = LocalDate.now();
                 if (operator.equalsIgnoreCase("BETWEEN") && currentDate.isEqual(applicableDate)){
@@ -50,5 +50,10 @@ public class CouponService implements ICouponService {
             updateTotalAmount = updateTotalAmount - discount;
         }
         return discount;
+    }
+
+    @Override
+    public List<Coupon> getAllCoupon() {
+        return couponRepository.findAll();
     }
 }
