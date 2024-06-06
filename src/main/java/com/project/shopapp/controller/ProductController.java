@@ -7,6 +7,7 @@ import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.responses.ProductListResponse;
+import com.project.shopapp.responses.ProductResponse;
 import com.project.shopapp.service.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/products")
@@ -54,7 +56,8 @@ public class ProductController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             Product newProduct = productService.createProduct(productDTO);
-            return ResponseEntity.ok(newProduct);
+            ProductResponse response = ProductResponse.fromProduct(newProduct);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -161,9 +164,13 @@ public class ProductController {
         );
         Page<Product> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
         int totalPage = productPage.getTotalPages();
+        List<ProductResponse> productResponse = productPage.stream().
+                map(ProductResponse::fromProduct)
+                .toList();
+
         ProductListResponse productListResponse = ProductListResponse
                 .builder()
-                .products(productPage.getContent())
+                .products(productResponse)
                 .totalPage(totalPage)
                 .build();
         return ResponseEntity.ok(productListResponse);
@@ -174,7 +181,7 @@ public class ProductController {
             @PathVariable("id") Long productId) {
         try {
             Product existingProduct = productService.getProductById(productId);
-            return ResponseEntity.ok(existingProduct);
+            return ResponseEntity.ok(ProductResponse.fromProduct(existingProduct));
         } catch (DataNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

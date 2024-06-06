@@ -22,7 +22,7 @@ public class ProductResponse extends BaseResponse {
     private long categoryId;
     private String descriptionHtml;
     private List<ProductImage> productImages = new ArrayList<>();
-    private List<Variant> prodVariants = new ArrayList<>();
+    private List<Variant> variants = new ArrayList<>();
     public static ProductResponse fromProduct(Product product) {
         ProductResponse productResponse = ProductResponse.builder()
                 .id(product.getId())
@@ -32,7 +32,7 @@ public class ProductResponse extends BaseResponse {
                 .categoryId(product.getCategory().getId())
                 .descriptionHtml(product.getDescriptionHtml())
                 .productImages(product.getProductImages())
-                .prodVariants(product.getVariants())
+                .variants(product.getVariants())
                 .build();
         productResponse.setCreateAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());

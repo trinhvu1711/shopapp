@@ -8,15 +8,9 @@ import com.project.shopapp.responses.CommentResponse;
 import com.project.shopapp.service.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,10 +23,16 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("")//http://localhost:8088/api/v1/comments
-    public ResponseEntity<List<Comment>> getAllComment(
-            @RequestParam("user_id") long userId,
-            @RequestParam("product_id") long productId) {
-        List<Comment> comments = commentService.getCommentByUserAndProduct(userId, productId);
+    public ResponseEntity<List<CommentResponse>> getAllComment(
+            @RequestParam(value = "user_id", required = false) Long userId,
+            @RequestParam("product_id") Long productId
+    ) {
+        List<CommentResponse> comments;
+        if (userId == null) {
+            comments = commentService.getCommentProduct(productId);
+        } else {
+            comments = commentService.getCommentByUserAndProduct(userId, productId);
+        }
         return ResponseEntity.ok(comments);
     }
 
@@ -44,8 +44,9 @@ public class CommentController {
             if(user.getId() != commentDTO.getUserId()){
                 return ResponseEntity.badRequest().body("You cannot comment as another user");
             }
-            commentService.insertComment(commentDTO);
-            return ResponseEntity.ok("Insert comment successfully");
+            Comment comment = commentService.insertComment(commentDTO);
+            CommentResponse response = CommentResponse.fromComment(comment);
+            return ResponseEntity.ok(response);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -73,9 +74,8 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")//http://localhost:8088/api/v1/comments
-    public ResponseEntity<CommentResponse> getCommentByProduct(@PathVariable Long id) {
-        List<Comment> comments = commentService.getCommentProduct(id);
-        List<CommentResponse> response = comments;
-        return ResponseEntity.ok(CommentResponse.fromComment(response));
+    public ResponseEntity<List<CommentResponse>> getCommentByProduct(@PathVariable Long id) {
+        List<CommentResponse> response = commentService.getCommentProduct(id);
+        return ResponseEntity.ok(response);
     }
 }

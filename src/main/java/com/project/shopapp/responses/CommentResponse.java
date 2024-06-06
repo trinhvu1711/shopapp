@@ -22,12 +22,15 @@ public class CommentResponse {
     private UserResponse userResponse;
 
     @JsonProperty("updated_at")
-    private LocalDateTime updatedAt;
+    private String updatedAt;
+    @JsonProperty("created_at")
+    private String createdAt;
     public static CommentResponse fromComment(Comment comment) {
         return CommentResponse.builder()
                 .content(comment.getContent())
                 .userResponse(UserResponse.fromUser(comment.getUser()))
-                .updatedAt(comment.getUpdatedAt())
+                .updatedAt(comment.getUpdatedAt().toString())
+                .createdAt(comment.getCreatedAt().toString())
                 .build();
     }
 }

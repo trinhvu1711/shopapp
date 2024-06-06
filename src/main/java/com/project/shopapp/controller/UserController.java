@@ -6,6 +6,7 @@ import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.dtos.UserUpdateDTO;
 import com.project.shopapp.models.User;
 import com.project.shopapp.responses.UserAdminResponse;
+import com.project.shopapp.responses.UserResponse;
 import com.project.shopapp.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -118,7 +119,8 @@ public class UserController {
         try {
             String extractedToken = token.substring(7);
             User user = userService.getUserDetailsFromToken(extractedToken);
-            return ResponseEntity.ok(user);
+            UserResponse response = UserResponse.fromUser(user);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

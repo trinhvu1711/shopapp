@@ -8,11 +8,13 @@ import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.CommentRepository;
 import com.project.shopapp.repositories.ProductRepository;
 import com.project.shopapp.repositories.UserRepository;
+import com.project.shopapp.responses.CommentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +32,7 @@ public class CommentService implements ICommentService {
                 .orElseThrow(() -> new DataNotFoundException("Cannot find Product with id: " + comment.getProductId()));
         Comment newComment = Comment.builder()
                 .content(comment.getContent())
-                .user(existingUser)
-                .product(product)
+                .user(existingUser).product(product)
                 .build();
         return commentRepository.save(newComment);
     }
@@ -45,19 +46,25 @@ public class CommentService implements ICommentService {
     @Override
     public void updateComment(CommentDTO comment, Long id) throws Exception {
         Comment exsiting = commentRepository.findById(id)
-                .orElseThrow(()-> new DataNotFoundException("Comment not found"));
+                .orElseThrow(() -> new DataNotFoundException("Comment not found"));
         exsiting.setContent(comment.getContent());
         commentRepository.save(exsiting);
     }
 
     @Override
-    public List<Comment> getCommentByUserAndProduct(Long userId, Long productId) {
-        return commentRepository.findByUserIdAndProductId(userId, productId);
+    public List<CommentResponse> getCommentByUserAndProduct(Long userId, Long productId) {
+        List<Comment> comments = commentRepository.findByUserIdAndProductId(userId, productId);
+        return comments.stream()
+                .map(CommentResponse::fromComment)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Comment> getCommentProduct(Long productId) {
-        return commentRepository.findByProductId(productId);
+    public List<CommentResponse> getCommentProduct(Long productId) {
+        List<Comment> comments = commentRepository.findByProductId(productId);
+        return comments.stream()
+                .map(CommentResponse::fromComment)
+                .collect(Collectors.toList());
     }
 
 }

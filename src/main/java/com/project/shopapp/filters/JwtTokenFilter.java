@@ -43,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             "/users/getAll/**",
             "/products/search",
             "/coupons/calculate", "/coupons",
-            "%s/comments/**", "%s/comments"
+            "/comments"
 
     );
 
@@ -84,7 +84,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassPath(@NonNull HttpServletRequest request) {
         String requestPath = request.getServletPath().replaceFirst("/" + apiPrefix, "");
-
+        if (!"GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/comments")) {
+            return false;
+        }
         for (String path : BYPASS_PATHS) {
             if (path.endsWith("/**")) {
                 String basePath = path.substring(0, path.length() - 3); // Remove "/**"

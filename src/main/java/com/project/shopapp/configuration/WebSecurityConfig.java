@@ -115,7 +115,7 @@ public class WebSecurityConfig {
                             .requestMatchers(GET,
                                              String.format("%s/comments", apiPrefix)).permitAll()
                             .requestMatchers(POST,
-                                             String.format("%s/comments/**", apiPrefix)).permitAll()
+                                             String.format("%s/comments", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
 
 
