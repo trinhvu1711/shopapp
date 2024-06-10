@@ -116,11 +116,13 @@ public class WebSecurityConfig {
                                              String.format("%s/comments", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                              String.format("%s/comments", apiPrefix)).permitAll()
+
+//                          Payment
+                            .requestMatchers(GET,
+                                             String.format("%s/payment/vn-pay", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                             String.format("%s/payment/vn-pay-callback", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
-
-
-
-//                            .anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable);
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
