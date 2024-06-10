@@ -110,6 +110,12 @@ public class WebSecurityConfig {
                                              String.format("%s/coupons/calculate", apiPrefix)).permitAll()
                             .requestMatchers(GET,
                                              String.format("%s/coupons", apiPrefix)).permitAll()
+
+//                          Comment
+                            .requestMatchers(GET,
+                                             String.format("%s/comments", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
+                                             String.format("%s/comments", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
 
 
