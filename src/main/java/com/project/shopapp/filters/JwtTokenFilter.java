@@ -84,6 +84,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassPath(@NonNull HttpServletRequest request) {
         String requestPath = request.getServletPath().replaceFirst("/" + apiPrefix, "");
+        if ("GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/payment/vn-pay")) {
+            return true;
+        }
+        if ("GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/payment/vn-pay-callback")) {
+            return true;
+        }
+        if ("POST".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/orders/pay")) {
+            return false;
+        }
         if (!"GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/comments")) {
             return false;
         }

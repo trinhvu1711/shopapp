@@ -66,6 +66,8 @@ public class WebSecurityConfig {
                             .requestMatchers(POST,
                                              String.format("%s/orders/cancel", apiPrefix)).permitAll()
                             .requestMatchers(POST,
+                                             String.format("%s/orders/pay", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
                                              String.format("%s/orders/details", apiPrefix)).permitAll()
                             .requestMatchers(PUT,
                                              String.format("%s/orders/**", apiPrefix)).hasAuthority("ROLE_ADMIN")
@@ -116,11 +118,13 @@ public class WebSecurityConfig {
                                              String.format("%s/comments", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                              String.format("%s/comments", apiPrefix)).permitAll()
+
+//                          Payment
+                            .requestMatchers(GET,
+                                             String.format("%s/payment/vn-pay", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                             String.format("%s/payment/vn-pay-callback", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
-
-
-
-//                            .anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable);
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {

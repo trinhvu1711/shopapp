@@ -41,4 +41,6 @@ public class OrderResponse extends BaseResponse{
     private String paymentStatus;
     @Column(name = "active")
     private boolean active;
+    @Column(name = "is_paid")
+    private boolean isPaid;
 }

@@ -58,4 +58,6 @@ public class Order {
 private List<OrderDetail> orderDetails;
     @Column(name = "active")
     private boolean active;
+    @Column(name = "is_paid")
+    private boolean isPaid;
 }

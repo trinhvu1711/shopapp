@@ -17,4 +17,6 @@ public interface IOrderService {
     List<Order> getOrdersFromToken(String extractedToken, String status) throws Exception;
 
     Order updateOrderStatus(String extractedToken, String trackingNumber, String status) throws Exception;
+
+    Order paidOrder(String trackingNumber) throws Exception;
 }
