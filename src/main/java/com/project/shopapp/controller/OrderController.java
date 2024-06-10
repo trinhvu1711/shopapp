@@ -2,15 +2,20 @@ package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.models.User;
 import com.project.shopapp.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("${api.prefix}/orders")
@@ -115,6 +120,23 @@ public class OrderController {
             return ResponseEntity.ok(existingOrder);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/pay")//http://localhost:8088/api/v1/orders/pay
+    public ResponseEntity<?> payOrder(@Valid @RequestParam String trackingNumber) {
+        try {
+            Order existingOrder = orderService.getOrderByTrackingNumber(trackingNumber);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !(authentication.getPrincipal() instanceof User user)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+            }
+
+            if (!Objects.equals(user.getId(), existingOrder.getUser().getId())) {
+                return ResponseEntity.badRequest().body("You cannot pay as another user");
+            }
+            return ResponseEntity.ok(orderService.paidOrder(trackingNumber));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

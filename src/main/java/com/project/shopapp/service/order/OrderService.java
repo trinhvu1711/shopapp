@@ -45,6 +45,7 @@ public class OrderService implements IOrderService {
         order.setUser(user);
         order.setOrderDate(new Date());
         order.setStatus(OrderStatus.PENDING);
+        order.setPaid(false);
         LocalDate shippingDate = orderDTO.getShippingDate() == null ? LocalDate.now() : orderDTO.getShippingDate();
         if (shippingDate.isBefore(LocalDate.now())) {
             throw new DataNotFoundException("Date must be at least today");
@@ -131,5 +132,14 @@ public class OrderService implements IOrderService {
         } else {
             throw new Exception("Can't update status Order ");
         }
+    }
+
+    @Override
+    public Order paidOrder(String trackingNumber) throws Exception {
+        Order existingOrder = orderRepository.getByTrackingNumber(trackingNumber)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find order with tracking id: " + trackingNumber));
+        existingOrder.setPaid(true);
+        return orderRepository.save(existingOrder);
+
     }
 }

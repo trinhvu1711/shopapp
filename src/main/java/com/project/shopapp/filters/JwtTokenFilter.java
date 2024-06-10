@@ -90,6 +90,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if ("GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/payment/vn-pay-callback")) {
             return true;
         }
+        if ("POST".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/orders/pay")) {
+            return false;
+        }
         if (!"GET".equalsIgnoreCase(request.getMethod()) && requestPath.equals("/comments")) {
             return false;
         }
