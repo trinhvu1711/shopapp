@@ -24,6 +24,7 @@ public class Variant {
     private boolean availableForSale;
     private float price;
     private String currency;
+    private float discount;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "variant_options",
