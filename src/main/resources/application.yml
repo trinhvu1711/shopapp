@@ -9,7 +9,7 @@ spring:
     username: root
     password:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: none
     properties:
@@ -27,10 +27,10 @@ jwt:
   secretKey: 1Yi8lyhf4XDkmPMJ0gI4+gQ2anXdW+jQwogwnK6ayJ4=
 payment:
   vnPay:
-    url: ${PAY_URL}
-    tmnCode: ${TMN_CODE}
-    secretKey: ${SECRET_KEY}
-    returnUrl: ${RETURN_URL}
-    version: ${VERSION}
-    command: ${COMMAND}
-    orderType: ${ORDER_TYPE}
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    tmnCode: 58X4B4HP
+    secretKey: VRLDWNVWDNPCOEPBZUTWSEDQAGXJCNGZ
+    returnUrl: http://localhost:3000/order/payment
+    version: 2.1.0
+    command: pay
+    orderType: other

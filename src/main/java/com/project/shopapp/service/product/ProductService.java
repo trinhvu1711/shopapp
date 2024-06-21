@@ -32,6 +32,7 @@ public class ProductService implements IProductService {
     public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
         Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find category with id " + productDTO.getCategoryId()));
+
         Product newProduct = Product.builder()
                 .name(productDTO.getName())
                 .thumbnail(productDTO.getThumbnail())

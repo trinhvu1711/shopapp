@@ -1,5 +1,6 @@
 package com.project.shopapp.controller;
 
+import com.project.shopapp.dtos.VariantAdminDTO;
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Variant;
@@ -7,6 +8,7 @@ import com.project.shopapp.service.variant.VariantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +23,10 @@ public class VariantController {
     private final VariantService variantService;
 
     @PostMapping("")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 //      Data transfer Object
     public ResponseEntity<?> createVariant(
-            @Valid @RequestBody VariantDTO variantDTO,
+            @Valid @RequestBody VariantAdminDTO variantDTO,
             BindingResult result) {
         try {
             if (result.hasErrors()) {
