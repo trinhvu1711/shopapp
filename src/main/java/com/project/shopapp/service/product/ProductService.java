@@ -11,6 +11,7 @@ import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.CategoryRepository;
 import com.project.shopapp.repositories.ProductImageRepository;
 import com.project.shopapp.repositories.ProductRepository;
+import com.project.shopapp.repositories.VariantRepository;
 import com.project.shopapp.responses.ProductAdminResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,13 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
+    private final VariantRepository variantRepository;
 
     @Override
     public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
         Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find category with id " + productDTO.getCategoryId()));
+
         Product newProduct = Product.builder()
                 .name(productDTO.getName())
                 .thumbnail(productDTO.getThumbnail())
@@ -82,8 +85,7 @@ public class ProductService implements IProductService {
                     .orElseThrow(() -> new DataNotFoundException("Cannot find category with id " + productDTO.getCategoryId()));
             existingProduct.setCategory(existingCategory);
             existingProduct.setDescription(productDTO.getDescription());
-            existingProduct.setThumbnail(productDTO.getThumbnail());
-            existingProduct.setDescriptionHtml(productDTO.getDescriptionHtml());
+            existingProduct.setThumbnail(productDTO.getThumbnail()!=null?productDTO.getThumbnail():existingProduct.getThumbnail());
             return productRepository.save(existingProduct);
         }
         return null;
@@ -92,7 +94,14 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        optionalProduct.ifPresent(productRepository::delete);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+
+            product.getProductImages().clear();
+            product.getVariants().clear();
+            productRepository.save(product);
+            productRepository.delete(product);
+        }
     }
 
     @Override
@@ -104,6 +113,25 @@ public class ProductService implements IProductService {
     public ProductImage createProductImage(long productId, ProductImageDTO productImageDTO) throws Exception {
         Product existingProduct = productRepository.findById(productImageDTO.getProductId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productImageDTO.getProductId()));
+        ProductImage newProductImage = ProductImage.builder()
+                .product(existingProduct)
+                .imageUrl(productImageDTO.getImageUrl())
+                .build();
+        int size = productImageRepository.findByProductId(productId).size();
+        if (size > ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS) {
+            throw new InvalidParamException("Number of image must be <= " + ProductImage.MAXIMUM_IMAGES_PER_PRODUCTS);
+        }
+        return productImageRepository.save(newProductImage);
+    }
+
+    @Override
+    public ProductImage updateProductImage(long productId, ProductImageDTO productImageDTO) throws Exception {
+        Product existingProduct = productRepository.findById(productImageDTO.getProductId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productImageDTO.getProductId()));
+
+        existingProduct.getProductImages().clear();
+        productRepository.save(existingProduct);
+
         ProductImage newProductImage = ProductImage.builder()
                 .product(existingProduct)
                 .imageUrl(productImageDTO.getImageUrl())

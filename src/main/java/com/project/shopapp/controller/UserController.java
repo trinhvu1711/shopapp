@@ -4,6 +4,7 @@ import com.project.shopapp.dtos.UpdateUserDTO;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.dtos.UserUpdateDTO;
+import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.responses.UserResponse;
@@ -78,6 +79,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get-user/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getUserById(
+            @PathVariable Long id
+    ) {
+        try {
+            User user = userService.getUserById(id);
+            UserResponse response = UserResponse.fromUser(user);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/update-user/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> updateUser(
@@ -142,4 +157,15 @@ public class UserController {
         return ResponseEntity.ok().body(updatedUser);
     }
 
+    @GetMapping("/role")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getUserByRole(
+    ) {
+        try {
+            List<Role> role = userService.getAllRole();
+            return ResponseEntity.ok(role);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

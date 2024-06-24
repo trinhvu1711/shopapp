@@ -31,7 +31,7 @@ public interface IProductService {
     boolean existByName(String name);
 
     ProductImage createProductImage(long productId, ProductImageDTO productImageDTO) throws Exception;
-
+    ProductImage updateProductImage(long productId, ProductImageDTO productImageDTO) throws Exception;
     List<ProductAdminResponse> searchProducts(String keyword);
 
 }

@@ -1,13 +1,17 @@
 package com.project.shopapp.controller;
 
 import com.project.shopapp.dtos.OrderDTO;
+import com.project.shopapp.dtos.StatusDTO;
 import com.project.shopapp.models.Order;
 import com.project.shopapp.models.User;
+import com.project.shopapp.responses.OrderAdminResponse;
+import com.project.shopapp.responses.OrderUpdateResponse;
 import com.project.shopapp.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -63,6 +67,35 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/update-status")
+    public ResponseEntity<?> updateOrderStatus(
+            @Valid @RequestBody StatusDTO statusDTO,BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            Order existingOrder = orderService.updateOrderAddminStatus(statusDTO);
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getOrdersUpdateResponse(
+            @Valid @PathVariable("id") Long id) {
+        try {
+            OrderUpdateResponse orders = orderService.getOrderUpdateResponse(id);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> getOrder(
             @Valid @PathVariable("id") Long orderId) {
@@ -73,7 +106,15 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @GetMapping("/get-all")//http://localhost:8088/api/v1/orders/get-all
+    public ResponseEntity<?> getAllOrders() {
+        try {
+            List<OrderAdminResponse> existingOrder = orderService.getAllOrders();
+            return ResponseEntity.ok(existingOrder);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @PutMapping("/{id}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> updateOrders(
             @Valid @PathVariable("id") Long id,
