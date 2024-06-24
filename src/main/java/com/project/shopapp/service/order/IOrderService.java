@@ -1,7 +1,10 @@
 package com.project.shopapp.service.order;
 
 import com.project.shopapp.dtos.OrderDTO;
+import com.project.shopapp.dtos.StatusDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.responses.OrderAdminResponse;
+import com.project.shopapp.responses.OrderUpdateResponse;
 
 import java.util.List;
 
@@ -19,4 +22,7 @@ public interface IOrderService {
     Order updateOrderStatus(String extractedToken, String trackingNumber, String status) throws Exception;
 
     Order paidOrder(String trackingNumber) throws Exception;
+    List<OrderAdminResponse> getAllOrders();
+    OrderUpdateResponse getOrderUpdateResponse(Long id) throws Exception;
+    Order updateOrderAddminStatus(StatusDTO statusDTO) throws Exception;
 }

@@ -2,17 +2,24 @@ package com.project.shopapp.service.order;
 
 import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.OrderDTO;
+import com.project.shopapp.dtos.StatusDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.models.OrderDetail;
 import com.project.shopapp.models.OrderStatus;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.OrderRepository;
 import com.project.shopapp.repositories.UserRepository;
+import com.project.shopapp.responses.OrderAdminResponse;
+import com.project.shopapp.responses.OrderDetailResponse;
+import com.project.shopapp.responses.OrderDetailsUpdate;
+import com.project.shopapp.responses.OrderUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -142,4 +149,57 @@ public class OrderService implements IOrderService {
         return orderRepository.save(existingOrder);
 
     }
+
+    @Override
+    public List<OrderAdminResponse> getAllOrders() {
+        return orderRepository.findAll().stream().map(order -> {
+            return OrderAdminResponse.fromOrderAdminResponse(order);
+        }).toList();
+    }
+
+    @Override
+    public OrderUpdateResponse getOrderUpdateResponse(Long id) throws Exception {
+        Order existingOrder = orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
+
+        List<OrderDetail> orderDetails = existingOrder.getOrderDetails();
+        List<OrderDetailsUpdate> orderDetailResponses= new ArrayList<>();
+        for (OrderDetail orderDetail : orderDetails) {
+            OrderDetailsUpdate orderDetailsUpdate = OrderDetailsUpdate
+                    .builder()
+                    .productName(orderDetail.getProduct().getName())
+                    .numberOfProducts(orderDetail.getNumberOfProducts())
+                    .totalMoney(orderDetail.getTotalMoney())
+                    .price(orderDetail.getPrice())
+                    .build();
+            orderDetailResponses.add(orderDetailsUpdate);
+        }
+
+        OrderUpdateResponse orderUpdateResponse = OrderUpdateResponse
+                .builder()
+                .fullName(existingOrder.getFullName())
+                .phoneNumber(existingOrder.getPhoneNumber())
+                .isPaid(existingOrder.isPaid())
+                .status(existingOrder.getStatus())
+                .trackingNumber(existingOrder.getTrackingNumber())
+                .orderDate(existingOrder.getOrderDate())
+                .orderDetails(orderDetailResponses)
+                .build();
+        return orderUpdateResponse;
+    }
+
+   @Override
+   public Order updateOrderAddminStatus(StatusDTO statusDTO) throws Exception {
+       Order existingOrder = orderRepository.findById(statusDTO.getOrderId())
+               .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + statusDTO.getOrderId()));
+
+       String status = statusDTO.getStatus();
+       if (!OrderStatus.PENDING.equals(status) && !OrderStatus.SHIPPING.equals(status)
+               && !OrderStatus.DELIVERED.equals(status) && !OrderStatus.CANCELED.equals(status)) {
+           throw new IllegalArgumentException("Invalid status: " + status);
+       }
+
+       existingOrder.setStatus(status);
+       existingOrder.setPaid(statusDTO.isPaid());
+       return orderRepository.save(existingOrder);
+   }
 }

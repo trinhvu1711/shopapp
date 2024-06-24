@@ -7,6 +7,7 @@ import com.project.shopapp.service.option.OptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import java.util.List;
 public class OptionController {
     private final OptionService optionService;
     @PostMapping("")
-//      Data transfer Object
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> createOption(
             @Valid @RequestBody OptionDTO optionDTO,
             BindingResult result) throws DataNotFoundException {
@@ -45,6 +46,7 @@ public class OptionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> updateOption(
             @PathVariable Long id,
             @Valid @RequestBody OptionDTO optionDTO
@@ -54,6 +56,7 @@ public class OptionController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteOption(@PathVariable Long id) {
         optionService.deleteOption(id);
         return ResponseEntity.ok("Delete option with id " + id);

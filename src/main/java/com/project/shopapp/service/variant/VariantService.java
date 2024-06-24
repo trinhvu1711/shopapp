@@ -9,6 +9,7 @@ import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.OptionRepository;
 import com.project.shopapp.repositories.ProductRepository;
 import com.project.shopapp.repositories.VariantRepository;
+import com.project.shopapp.responses.VariantResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -94,7 +95,7 @@ public class VariantService implements IVariantService {
     }
 
     @Override
-    public List<Variant> updateProductVariant(long productId, List<Long> variants) throws Exception {
+    public List<Variant> createProductVariant(long productId, List<Long> variants) throws Exception {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productId));
         List<Variant> variantList = new ArrayList<>();
@@ -108,6 +109,45 @@ public class VariantService implements IVariantService {
         productRepository.save(existingProduct);
 
         return variantList;
+    }
+
+    @Override
+    public List<Variant> updateProductVariant(long productId, List<Long> variants) throws Exception {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find product with id " + productId));
+        if (existingProduct.getVariants() == null) {
+            existingProduct.setVariants(new ArrayList<>());
+        }
+
+        existingProduct.getVariants().clear();
+
+        productRepository.save(existingProduct);
+
+        for (Long variantId : variants) {
+            Variant existingVariant = variantRepository.findById(variantId)
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find variant with id " + variantId));
+
+            existingProduct.getVariants().add(existingVariant);
+        }
+
+        productRepository.save(existingProduct);
+
+        return existingProduct.getVariants();
+    }
+
+    @Override
+    public List<VariantResponse> getAllVariantsAdmin() throws Exception {
+        List<Variant> variants = variantRepository.findAll();
+        if (variants.isEmpty()) {
+            throw new DataNotFoundException("No variant found");
+        }
+        List<VariantResponse> responses = variants.stream()
+                .map(variant -> VariantResponse.builder()
+                        .id(variant.getId())
+                        .name(variant.getName())
+                        .build())
+                .toList();
+        return responses;
     }
 
 }

@@ -19,5 +19,5 @@ public class ProductDTOWithThumbnailFile {
     @JsonProperty("category_id")
     private long categoryId;
     @JsonProperty("variants")
-    private List<Long> variants;
+    private List<String> variants;
 }

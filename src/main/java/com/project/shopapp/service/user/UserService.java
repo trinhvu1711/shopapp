@@ -1,6 +1,8 @@
 package com.project.shopapp.service.user;
 
+import com.project.shopapp.ShopAppApplication;
 import com.project.shopapp.component.JwtTokenUtil;
+import com.project.shopapp.dtos.StatusDTO;
 import com.project.shopapp.dtos.UpdateUserDTO;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserUpdateDTO;
@@ -12,7 +14,10 @@ import com.project.shopapp.repositories.UserRepository;
 import com.project.shopapp.responses.LoginResponse;
 import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.responses.UserResponse;
+import com.project.shopapp.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -152,6 +157,8 @@ public class UserService implements IUserService {
     @Override
     public boolean deleteUser(long id) throws DataNotFoundException {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+        existingUser.getComments().clear();
+        userRepository.save(existingUser);
         userRepository.deleteById(existingUser.getId());
         return !userRepository.existsById(id);
     }
@@ -198,7 +205,34 @@ public class UserService implements IUserService {
         return userRepository.save(existingUser);
     }
 
+    @Override
+    public List<Role> getAllRole() throws DataNotFoundException {
+        List<Role> roles = roleRepository.findAll();
+        if (roles.isEmpty()) {
+            throw new DataNotFoundException("No role found");
+        }
+        roles.removeIf(r -> r.getId() == 0);
+        return roles;
+    }
+
+    @Override
+    public User getUserById(Long userId) throws DataNotFoundException {
+        User user= userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+        return user;
+    }
+
     public RoleRepository getRoleRepository() {
         return roleRepository;
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(ShopAppApplication.class, args);
+        OrderService orderService = context.getBean(OrderService.class);
+try {
+            orderService.updateOrderAddminStatus(new StatusDTO(4L, "delivered",true));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -28,6 +28,7 @@ public class UserResponse {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
                 .address(user.getAddress())
                 .active(user.isActive())
                 .dateOfBirth(user.getDateOfBirth())

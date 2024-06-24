@@ -49,6 +49,23 @@ public class VariantController {
         List<Variant> variants = variantService.getAllVariants();
         return ResponseEntity.ok(variants);
     }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllVariants() {
+        try {
+            return ResponseEntity.ok(variantService.getAllVariants());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/get-all")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getAllVariantsAdmin() {
+        try {
+            return ResponseEntity.ok(variantService.getAllVariantsAdmin());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/{id}")//http://localhost:8088/api/v1/variants?page=10&limit=10
     public ResponseEntity<Variant> getVariant(@PathVariable Long id) throws DataNotFoundException {
         Variant variants = variantService.getVariantById(id);
