@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -68,8 +67,7 @@ public class OrderController {
     }
 
     @PostMapping("/update-status")
-    public ResponseEntity<?> updateOrderStatus(
-            @Valid @RequestBody StatusDTO statusDTO,BindingResult result) {
+    public ResponseEntity<?> updateOrderStatus(@RequestBody StatusDTO statusDTO, BindingResult result) {
         try {
             if (result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
@@ -78,8 +76,9 @@ public class OrderController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            Order existingOrder = orderService.updateOrderAddminStatus(statusDTO);
-            return ResponseEntity.ok(existingOrder);
+            orderService.updateOrderAddminStatus(statusDTO);
+
+            return ResponseEntity.ok("Update status successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -106,6 +105,7 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/get-all")//http://localhost:8088/api/v1/orders/get-all
     public ResponseEntity<?> getAllOrders() {
         try {
@@ -115,6 +115,7 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PutMapping("/{id}")//http://localhost:8088/api/v1/orders/6
     public ResponseEntity<?> updateOrders(
             @Valid @PathVariable("id") Long id,
@@ -157,12 +158,13 @@ public class OrderController {
             @RequestHeader("Authorization") String token, @RequestParam String trackingNumber) {
         try {
             String extractedToken = token.substring(7);
-            Order existingOrder = orderService.updateOrderStatus(extractedToken,trackingNumber, "canceled");
+            Order existingOrder = orderService.updateOrderStatus(extractedToken, trackingNumber, "canceled");
             return ResponseEntity.ok(existingOrder);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/pay")//http://localhost:8088/api/v1/orders/pay
     public ResponseEntity<?> payOrder(@Valid @RequestParam String trackingNumber) {
         try {

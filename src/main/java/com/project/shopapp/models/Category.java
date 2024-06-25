@@ -3,6 +3,8 @@ package com.project.shopapp.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="categories")
 @Data
@@ -20,4 +22,6 @@ public class Category {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
     private String slug;
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 }

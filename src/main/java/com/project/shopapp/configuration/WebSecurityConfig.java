@@ -55,6 +55,8 @@ public class WebSecurityConfig {
                             .requestMatchers(POST, String.format("%s/users/create-user", apiPrefix)).hasAuthority("ROLE_ADMIN")
                             .requestMatchers(PUT,
                                     String.format("%s/users/details/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/categories/get/**", apiPrefix)).permitAll()
 //                            Order
                             .requestMatchers(GET,
                                     String.format("%s/orders/**", apiPrefix)).permitAll()
@@ -72,9 +74,7 @@ public class WebSecurityConfig {
                                     String.format("%s/orders/pay", apiPrefix)).permitAll()
                             .requestMatchers(POST,
                                     String.format("%s/orders/details", apiPrefix)).permitAll()
-                            .requestMatchers(PUT,
-                                    String.format("%s/orders/**", apiPrefix)).hasAuthority("ROLE_ADMIN")
-                            .requestMatchers(PUT,
+                            .requestMatchers(POST,
                                     String.format("%s/orders/update-status", apiPrefix)).permitAll()
 //                            Product
                             .requestMatchers(GET,
@@ -85,6 +85,16 @@ public class WebSecurityConfig {
                                     String.format("%s/categories", apiPrefix)).permitAll()
                             .requestMatchers(GET,
                                     String.format("%s/variants/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/variants/get/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/variants/all", apiPrefix)).permitAll()
+                            .requestMatchers(POST,
+                                    String.format("%s/categories/create", apiPrefix)).hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(DELETE,
+                                    String.format("%s/categories/delete/**", apiPrefix)).hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(GET,
+                                    String.format("%s/categories/get-all-categories", apiPrefix)).permitAll()
 //                            List cart
                             .requestMatchers(GET,
                                     String.format("%s/list_carts/**", apiPrefix)).permitAll()
