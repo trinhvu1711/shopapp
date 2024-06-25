@@ -16,13 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class VariantAdminDTO {
+    private long id;
     @JsonProperty("options")
     private List<Long> options;
     @JsonProperty("available_for_sale")
     private boolean availableForSale;
     @Min(value = 0, message = "Price must be greater than or equal to 0")
-    @Max(value = 10000000, message = "Price must be less than or equal to 10,000,000")
+    @Max(value = 100000000, message = "Price must be less than or equal to 100,000,000")
     private Float price;
     @NotEmpty(message = "currency cannot be empty")
     private String currency;
+    private Float discount;
 }

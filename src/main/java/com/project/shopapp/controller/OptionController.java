@@ -45,6 +45,25 @@ public class OptionController {
         return ResponseEntity.ok(options);
     }
 
+    @GetMapping("/get-configutation")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getConfigutation() {
+        try {
+            return ResponseEntity.ok(optionService.getConfiguration());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/get-color")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getColor() {
+        try {
+            return ResponseEntity.ok(optionService.getColor());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> updateOption(

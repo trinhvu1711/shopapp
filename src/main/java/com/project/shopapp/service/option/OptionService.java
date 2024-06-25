@@ -57,4 +57,16 @@ public class OptionService implements IOptionService {
     public void deleteOption(long id) {
         optionRepository.deleteById(id);
     }
+
+    @Override
+    public List<Option> getConfiguration() throws DataNotFoundException {
+        List<Option> options = optionRepository.findByName("Cấu hình");
+        return options;
+    }
+
+    @Override
+    public List<Option> getColor() throws DataNotFoundException {
+        List<Option> options = optionRepository.findByName("Màu");
+        return options;
+    }
 }

@@ -12,4 +12,6 @@ public interface IOptionService {
     List<Option> getAllOptions();
     Option updateOption(long optionId, OptionDTO optionDTO) throws DataNotFoundException;
     void deleteOption(long id);
+    List<Option> getConfiguration() throws DataNotFoundException;
+    List<Option> getColor() throws DataNotFoundException;
 }

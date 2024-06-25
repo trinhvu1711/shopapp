@@ -4,6 +4,7 @@ import com.project.shopapp.dtos.VariantAdminDTO;
 import com.project.shopapp.dtos.VariantDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Variant;
+import com.project.shopapp.responses.VariantAdminResponse;
 import com.project.shopapp.service.variant.VariantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,8 @@ public class VariantController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllVariants() {
         try {
-            return ResponseEntity.ok(variantService.getAllVariants());
+            List<VariantAdminResponse> variants = variantService.getListVariants();
+            return ResponseEntity.ok(variants);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -66,6 +68,14 @@ public class VariantController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getByIdVariantsAdmin(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(variantService.getVariantAdminById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/{id}")//http://localhost:8088/api/v1/variants?page=10&limit=10
     public ResponseEntity<Variant> getVariant(@PathVariable Long id) throws DataNotFoundException {
         Variant variants = variantService.getVariantById(id);
@@ -73,19 +83,22 @@ public class VariantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateVariant(
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> updateVariant(
             @PathVariable Long id,
-            @Valid @RequestBody VariantDTO variantDTO
+            @Valid @RequestBody VariantAdminDTO variantDTO
     ) {
         try {
-            variantService.updateVariant(id, variantDTO);
-            return ResponseEntity.ok("Update variant successfully");
+//            variantService.updateAdminVariant(id, variantDTO);
+            return ResponseEntity.ok(variantService.updateAdminVariant(id, variantDTO));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteVariant(@PathVariable Long id) {
         try {
             variantService.deleteVariant(id);

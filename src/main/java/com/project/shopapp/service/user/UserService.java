@@ -2,19 +2,18 @@ package com.project.shopapp.service.user;
 
 import com.project.shopapp.ShopAppApplication;
 import com.project.shopapp.component.JwtTokenUtil;
-import com.project.shopapp.dtos.StatusDTO;
-import com.project.shopapp.dtos.UpdateUserDTO;
-import com.project.shopapp.dtos.UserDTO;
-import com.project.shopapp.dtos.UserUpdateDTO;
+import com.project.shopapp.dtos.*;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
+import com.project.shopapp.models.Variant;
 import com.project.shopapp.repositories.RoleRepository;
 import com.project.shopapp.repositories.UserRepository;
 import com.project.shopapp.responses.LoginResponse;
 import com.project.shopapp.responses.UserAdminResponse;
 import com.project.shopapp.responses.UserResponse;
 import com.project.shopapp.service.order.OrderService;
+import com.project.shopapp.service.variant.VariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -150,6 +150,10 @@ public class UserService implements IUserService {
         if (userDTO.getImage() != null) {
             existingUser.setImage(userDTO.getImage());
         }
+        if (userDTO.getRoleId() > 0) {
+            Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(() -> new DataNotFoundException("Role not found"));
+            existingUser.setRole(role);
+        }
 
         return userRepository.save(existingUser);
     }
@@ -225,14 +229,17 @@ public class UserService implements IUserService {
         return roleRepository;
     }
 
-    public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(ShopAppApplication.class, args);
-        OrderService orderService = context.getBean(OrderService.class);
-try {
-            orderService.updateOrderAddminStatus(new StatusDTO(4L, "delivered",true));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        ApplicationContext context = SpringApplication.run(ShopAppApplication.class, args);
+//        VariantService orderService = context.getBean(VariantService.class);
+//try {
+//    List<Long> options= new ArrayList<>();
+//    options.add(12L);
+//    options.add(8L);
+//            orderService.updateAdminVariant(73.new VariantAdminDTO(options,false,35000000,0.23,"VND"));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
