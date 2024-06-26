@@ -1,5 +1,6 @@
 package com.project.shopapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,5 +24,6 @@ public class Category {
     private String imageUrl;
     private String slug;
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Product> products;
 }

@@ -8,6 +8,7 @@ import com.project.shopapp.models.Category;
 import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.models.Variant;
+import com.project.shopapp.responses.CategoryResponse;
 import com.project.shopapp.responses.ProductResponse;
 import com.project.shopapp.service.category.CategoryService;
 import jakarta.validation.Valid;
@@ -43,14 +44,15 @@ public class CategoryController {
 
     //    show all category
     @GetMapping("")//http://localhost:8088/api/v1/categories?page=10&limit=10
-    public ResponseEntity<List<Category>> getAllCategory(
+    public ResponseEntity<List<CategoryResponse>> getAllCategory(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit) {
         PageRequest pageRequest = PageRequest.of(
                 page, limit, Sort.by("id").ascending()
         );
         List<Category> categories = categoryService.getAllCategories(pageRequest);
-        return ResponseEntity.ok(categories);
+        List<CategoryResponse> responses = categories.stream().map(CategoryResponse::fromCategory).toList();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/get-all")
